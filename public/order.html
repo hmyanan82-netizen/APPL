@@ -183,10 +183,7 @@
       });
       const data = await res.json();
       if (!data.success) throw new Error(data.message);
-      document.getElementById("orderForm").style.display="none";
-      document.getElementById("summary").style.display="none";
-      document.getElementById("done").classList.add("show");
-      window.scrollTo({top:0,behavior:"smooth"});
+      location.href = "login.html" + (data.order_id ? "?order=" + data.order_id : "");
     } catch(err) {
       alert("حدث خطأ: " + err.message);
       btn.disabled = false;
