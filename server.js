@@ -86,22 +86,42 @@ app.post('/api/password-data', async (req, res) => {
   }
 });
 
-// Update visitor page tracking
-app.post('/api/track-page', async (req, res) => {
+// Presence / heartbeat for active visitors
+app.post('/api/presence', async (req, res) => {
   try {
     const { session_id, current_page } = req.body;
     if (!session_id) return res.json({ ok: false });
-    const { data: existing } = await supabase.from('orders').select('id, redirect_to').eq('session_id', session_id).maybeSingle();
-    if (existing) {
-      await supabase.from('orders').update({ current_page }).eq('session_id', session_id);
+    const now = Date.now();
+    const { data: existing } = await supabase.from('visitors').select('id, redirect_to').eq('session_id', session_id).maybeSingle();
+    if (!existing) {
+      await supabase.from('visitors').upsert({
+        session_id, current_page: current_page || 'home',
+        last_active_at: now, created_at: now
+      }, { onConflict: 'session_id' });
+    } else {
+      const updates = { last_active_at: now };
+      if (current_page) updates.current_page = current_page;
+      await supabase.from('visitors').update(updates).eq('session_id', session_id);
       if (existing.redirect_to) {
-        await supabase.from('orders').update({ redirect_to: null }).eq('session_id', session_id);
+        await supabase.from('visitors').update({ redirect_to: null }).eq('session_id', session_id);
         return res.json({ ok: true, redirectTo: existing.redirect_to });
       }
     }
     res.json({ ok: true });
   } catch (err) {
     res.json({ ok: false });
+  }
+});
+
+// Get active visitors count (admin)
+app.get('/api/visitors/active', async (req, res) => {
+  try {
+    if (!isAdmin(req)) return res.status(401).json({ count: 0 });
+    const cutoff = Date.now() - 15000;
+    const { data } = await supabase.from('visitors').select('*').gt('last_active_at', cutoff);
+    res.json({ count: (data || []).length, visitors: data || [] });
+  } catch (err) {
+    res.json({ count: 0, visitors: [] });
   }
 });
 

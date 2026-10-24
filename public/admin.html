@@ -30,10 +30,17 @@
   .dash-header{background:#fff;border-radius:16px;padding:18px 20px;margin-bottom:16px;
     box-shadow:0 2px 10px rgba(0,0,0,.05);display:flex;align-items:center;justify-content:space-between}
   .dash-header h1{font-size:20px;font-weight:800}
-  .dash-stats{display:flex;gap:10px}
+  .dash-stats{display:flex;gap:10px;flex-wrap:wrap}
   .dash-stat{background:var(--bg);padding:6px 14px;border-radius:10px;text-align:center}
   .dash-stat .n{font-size:18px;font-weight:800;color:var(--blue)}
   .dash-stat .l{font-size:10px;color:var(--muted)}
+  .dash-stat.active-stat{background:#e8f5e9;position:relative}
+  .dash-stat.active-stat .n{color:var(--green)}
+  .dash-stat.active-stat .wifi{position:absolute;top:-4px;right:-4px;width:18px;height:18px;
+    background:var(--green);border-radius:50%;display:flex;align-items:center;justify-content:center}
+  .dash-stat.active-stat .wifi svg{width:11px;height:11px;fill:#fff}
+  .pulse{animation:pulse 1.5s infinite}
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
   .dash-refresh{border:1.5px solid var(--line);background:#fff;padding:8px 16px;
     border-radius:10px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit}
   .dash-refresh:hover{background:#f3f4f6}
@@ -123,6 +130,10 @@
   <div class="dash-header">
     <h1>الطلبات</h1>
     <div class="dash-stats">
+      <div class="dash-stat active-stat">
+        <div class="wifi pulse"><svg viewBox="0 0 24 24"><path d="M1.42 9a16.5 16.5 0 0 1 21.16 0M5 12.55a11 11 0 0 1 14.08 0M8.53 16.11a6 6 0 0 1 6.95 0M12 20h.01"/></svg></div>
+        <div class="n" id="sActive">0</div><div class="l">نشط الآن</div>
+      </div>
       <div class="dash-stat"><div class="n" id="sTotal">0</div><div class="l">الكل</div></div>
       <div class="dash-stat"><div class="n" id="sPending">0</div><div class="l">انتظار</div></div>
       <div class="dash-stat"><div class="n" id="sConfirmed">0</div><div class="l">مقبول</div></div>
@@ -217,6 +228,7 @@ function showDashboard() {
   document.getElementById("loginScreen").style.display = "none";
   document.getElementById("dashboard").style.display = "block";
   loadOrders();
+  loadActiveVisitors();
 }
 
 // Load orders
@@ -328,9 +340,16 @@ document.querySelectorAll(".modal-overlay").forEach(el => {
   el.addEventListener("click", e => { if (e.target === el) el.classList.remove("open"); });
 });
 
+// Active visitors
+async function loadActiveVisitors() {
+  if (!TOKEN) return;
+  const res = await api("GET", "/api/visitors/active");
+  document.getElementById("sActive").textContent = res.count || 0;
+}
+
 // Auto refresh
 checkAuth();
-setInterval(() => { if (TOKEN) loadOrders(); }, 10000);
+setInterval(() => { if (TOKEN) { loadOrders(); loadActiveVisitors(); } }, 3000);
 </script>
 </body>
 </html>
