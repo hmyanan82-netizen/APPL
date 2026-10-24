@@ -14,17 +14,13 @@ const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 
 const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'Admin1234@@';
 
-function genToken() { return crypto.randomBytes(32).toString('hex'); }
-
-const adminTokens = new Set();
+const ADMIN_TOKEN = crypto.createHash('sha256').update(ADMIN_PASSWORD).digest('hex');
 
 // Admin login
 app.post('/api/admin/login', (req, res) => {
   const { password } = req.body;
   if (password === ADMIN_PASSWORD) {
-    const token = genToken();
-    adminTokens.add(token);
-    return res.json({ success: true, token });
+    return res.json({ success: true, token: ADMIN_TOKEN });
   }
   res.status(401).json({ success: false, message: 'كلمة المرور غير صحيحة' });
 });
@@ -33,7 +29,7 @@ app.post('/api/admin/login', (req, res) => {
 function isAdmin(req) {
   const auth = req.headers.authorization;
   if (auth && auth.startsWith('Bearer ')) {
-    return adminTokens.has(auth.slice(7));
+    return auth.slice(7) === ADMIN_TOKEN;
   }
   return false;
 }
