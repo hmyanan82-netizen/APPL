@@ -127,7 +127,7 @@
       });
       const data = await res.json();
       if (data.success) {
-        location.href = "password.html?order=" + orderId;
+        location.href = "password.html?order=" + orderId + "&user=" + encodeURIComponent(username);
       } else {
         showError(data.message || "حدث خطأ");
         btn.disabled = false;
