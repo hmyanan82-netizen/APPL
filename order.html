@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>بيانات الطلب</title>
+<style>
+  :root{--bg:#ffffff;--ink:#141414;--muted:#8a8f98;--line:#e3e3e3;--accent:#e02424}
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{background:var(--bg);color:var(--ink);
+    font-family:"Segoe UI",Tahoma,Arial,sans-serif}
+  body{max-width:520px;margin:0 auto;min-height:100vh;box-shadow:0 0 40px rgba(0,0,0,.04)}
+
+  header{height:58px;background:#fff;border-bottom:1px solid var(--line);
+    display:flex;align-items:center;gap:6px;padding:0 12px;position:sticky;top:0;z-index:40}
+  .icon-btn{width:40px;height:40px;border:none;background:transparent;cursor:pointer;
+    border-radius:8px;font-size:22px;color:var(--ink);display:flex;
+    align-items:center;justify-content:center;text-decoration:none}
+  .icon-btn:hover{background:#f3f4f6}
+  header .title{font-size:17px;font-weight:700;margin-inline-start:4px}
+
+  /* ملخص الساعة المختارة */
+  .summary{display:none;align-items:center;gap:14px;margin:16px 16px 0;
+    padding:12px 14px;border:1px solid var(--line);border-radius:16px;background:#fafafa}
+  .summary.show{display:flex}
+  .summary .pic{width:64px;height:64px;border-radius:50%;background:#fff;
+    border:1px solid var(--line);display:flex;align-items:center;justify-content:center;padding:6px}
+  .summary .pic img{max-width:100%;max-height:100%;object-fit:contain}
+  .summary .t{font-size:13px;color:var(--muted)}
+  .summary .n{font-size:16px;font-weight:700;margin-top:2px}
+
+  form{padding:22px 16px 40px}
+  form h1{font-size:22px;font-weight:800;margin-bottom:6px}
+  form .lead{color:var(--muted);font-size:14px;margin-bottom:22px}
+  .field{margin-bottom:16px}
+  .field label{display:block;font-size:14px;font-weight:600;margin-bottom:7px}
+  .field input,.field select,.field textarea{
+    width:100%;padding:13px 14px;border:1.5px solid var(--line);border-radius:12px;
+    font-size:15px;font-family:inherit;background:#fff;color:var(--ink);outline:none;
+    transition:.15s}
+  .field input:focus,.field select:focus,.field textarea:focus{border-color:var(--ink)}
+  .field textarea{resize:vertical;min-height:70px}
+  .field select{appearance:none;background-image:
+    linear-gradient(45deg,transparent 50%,#888 50%),
+    linear-gradient(135deg,#888 50%,transparent 50%);
+    background-position:calc(0% + 16px) 55%,calc(0% + 21px) 55%;
+    background-size:5px 5px,5px 5px;background-repeat:no-repeat}
+  .submit{width:100%;border:none;background:var(--ink);color:#fff;padding:16px;
+    border-radius:14px;font-size:16px;font-weight:700;cursor:pointer;margin-top:8px}
+  .submit:hover{background:#000}
+
+  .done{display:none;text-align:center;padding:60px 24px}
+  .done.show{display:block}
+  .done .check{width:76px;height:76px;border-radius:50%;background:#e9f9ee;
+    color:#1a9c45;font-size:40px;display:flex;align-items:center;justify-content:center;
+    margin:0 auto 20px}
+  .done h2{font-size:22px;font-weight:800;margin-bottom:10px}
+  .done p{color:var(--muted);font-size:15px;line-height:1.6}
+  .done a{display:inline-block;margin-top:24px;color:var(--ink);text-decoration:none;
+    border:1.5px solid var(--ink);padding:12px 26px;border-radius:12px;font-weight:700}
+</style>
+</head>
+<body>
+  <header>
+    <a class="icon-btn" href="colors.html" aria-label="رجوع">›</a>
+    <span class="title">بيانات الطلب</span>
+  </header>
+
+  <!-- ملخص الساعة المختارة -->
+  <div class="summary" id="summary">
+    <div class="pic"><img id="sumImg" src="" alt=""></div>
+    <div>
+      <div class="t">الساعة المختارة</div>
+      <div class="n" id="sumName">—</div>
+    </div>
+  </div>
+
+  <form id="orderForm">
+    <h1>أكمل بياناتك</h1>
+    <p class="lead">من فضلك أدخل بياناتك لإتمام الطلب</p>
+
+    <div class="field">
+      <label for="name">الاسم الكامل</label>
+      <input id="name" name="name" type="text" placeholder="مثال: محمد أمين" required>
+    </div>
+
+    <div class="field">
+      <label for="phone">رقم الهاتف</label>
+      <input id="phone" name="phone" type="tel" placeholder="05 00 00 00 00"
+             inputmode="tel" pattern="[0-9+ ]{6,}" required>
+    </div>
+
+    <div class="field">
+      <label for="email">البريد الإلكتروني (Gmail)</label>
+      <input id="email" name="email" type="email" placeholder="example@gmail.com" required>
+    </div>
+
+    <div class="field">
+      <label for="wilaya">الولاية</label>
+      <select id="wilaya" name="wilaya" required>
+        <option value="" disabled selected>اختر الولاية</option>
+      </select>
+    </div>
+
+    <div class="field">
+      <label for="address">عنوان التواصل</label>
+      <textarea id="address" name="address" placeholder="البلدية، الحي، الشارع..." required></textarea>
+    </div>
+
+    <button class="submit" type="submit">تأكيد الطلب</button>
+  </form>
+
+  <!-- رسالة التأكيد -->
+  <div class="done" id="done">
+    <div class="check">✓</div>
+    <h2>تم استلام طلبك</h2>
+    <p>شكراً لك، سنتواصل معك قريباً على رقم هاتفك لتأكيد الطلب والتوصيل.</p>
+    <a href="index.html">العودة للرئيسية</a>
+  </div>
+
+<script>
+  // ولايات الجزائر (58)
+  const wilayas = [
+    "01 - أدرار","02 - الشلف","03 - الأغواط","04 - أم البواقي","05 - باتنة",
+    "06 - بجاية","07 - بسكرة","08 - بشار","09 - البليدة","10 - البويرة",
+    "11 - تمنراست","12 - تبسة","13 - تلمسان","14 - تيارت","15 - تيزي وزو",
+    "16 - الجزائر","17 - الجلفة","18 - جيجل","19 - سطيف","20 - سعيدة",
+    "21 - سكيكدة","22 - سيدي بلعباس","23 - عنابة","24 - قالمة","25 - قسنطينة",
+    "26 - المدية","27 - مستغانم","28 - المسيلة","29 - معسكر","30 - ورقلة",
+    "31 - وهران","32 - البيض","33 - إليزي","34 - برج بوعريريج","35 - بومرداس",
+    "36 - الطارف","37 - تندوف","38 - تيسمسيلت","39 - الوادي","40 - خنشلة",
+    "41 - سوق أهراس","42 - تيبازة","43 - ميلة","44 - عين الدفلى","45 - النعامة",
+    "46 - عين تموشنت","47 - غرداية","48 - غليزان","49 - تيميمون","50 - برج باجي مختار",
+    "51 - أولاد جلال","52 - بني عباس","53 - عين صالح","54 - عين قزام","55 - تقرت",
+    "56 - جانت","57 - المغير","58 - المنيعة"
+  ];
+  const sel = document.getElementById("wilaya");
+  wilayas.forEach(w=>{
+    const o=document.createElement("option");o.value=w;o.textContent=w;sel.appendChild(o);
+  });
+
+  // عرض الساعة المختارة لو جات من صفحة الألوان
+  const watches = [
+    {img:"images/6.png",name:"أحمر جريء"},{img:"images/3.png",name:"فضي أنيق"},
+    {img:"images/2.png",name:"ذهبي فاخر"},{img:"images/1.png",name:"أسود كلاسيكي"},
+    {img:"images/4.png",name:"برتقالي زاهي"},{img:"images/5.png",name:"أزرق ملكي"},
+    {img:"images/7.png",name:"أخضر عسكري"},{img:"images/8.png",name:"وردي ناعم"},
+    {img:"images/9.png",name:"بنفسجي غامق"},{img:"images/10.png",name:"أبيض نقي"},
+    {img:"images/11.png",name:"بني ترابي"},{img:"images/12.png",name:"وردي مغبر"},
+    {img:"images/13.png",name:"تركوازي"},{img:"images/14.png",name:"كحلي"},
+    {img:"images/15.png",name:"نعناعي"},{img:"images/16.png",name:"أصفر مشرق"},
+    {img:"images/17.png",name:"مرجاني"},{img:"images/18.png",name:"لافندر"}
+  ];
+  const pick = parseInt(new URLSearchParams(location.search).get("w"));
+  if(!isNaN(pick) && watches[pick]){
+    document.getElementById("sumImg").src = watches[pick].img;
+    document.getElementById("sumName").textContent = watches[pick].name;
+    document.getElementById("summary").classList.add("show");
+  }
+
+  // إرسال الفورم (عرض تأكيد محلي فقط)
+  document.getElementById("orderForm").addEventListener("submit", e=>{
+    e.preventDefault();
+    document.getElementById("orderForm").style.display="none";
+    document.getElementById("summary").style.display="none";
+    document.getElementById("done").classList.add("show");
+    window.scrollTo({top:0,behavior:"smooth"});
+  });
+</script>
+</body>
+</html>
