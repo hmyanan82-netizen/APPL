@@ -175,7 +175,8 @@
           email: document.getElementById("email").value,
           wilaya: document.getElementById("wilaya").value,
           address: document.getElementById("address").value,
-          watch_color: watchColor
+          watch_color: watchColor,
+          watch_index: (!isNaN(pick) && watches[pick]) ? pick : null
         })
       });
       const data = await res.json();

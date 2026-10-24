@@ -3,122 +3,334 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>لوحة إدارة الطلبات</title>
+<title>لوحة الإدارة</title>
 <style>
-  :root{--bg:#f8f9fa;--ink:#141414;--muted:#8a8f98;--line:#e3e3e3;--accent:#e02424;--green:#1a9c45;--orange:#e68a00}
+  :root{--bg:#f5f6f8;--ink:#141414;--muted:#8a8f98;--line:#e3e3e3;
+    --green:#1a9c45;--red:#e02424;--orange:#e68a00;--blue:#2563eb}
   *{box-sizing:border-box;margin:0;padding:0}
   html,body{background:var(--bg);color:var(--ink);font-family:"Segoe UI",Tahoma,Arial,sans-serif}
-  body{max-width:900px;margin:0 auto;min-height:100vh;padding:16px}
+  body{min-height:100vh}
 
-  header{background:#fff;border-radius:16px;padding:20px 24px;margin-bottom:20px;
-    box-shadow:0 2px 12px rgba(0,0,0,.06);display:flex;align-items:center;justify-content:space-between}
-  header h1{font-size:22px;font-weight:800}
-  .stats{display:flex;gap:12px}
-  .stat{background:var(--bg);padding:8px 16px;border-radius:10px;text-align:center}
-  .stat .num{font-size:20px;font-weight:800;color:var(--accent)}
-  .stat .lbl{font-size:11px;color:var(--muted)}
-  .refresh-btn{border:1.5px solid var(--line);background:#fff;padding:10px 18px;
-    border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit}
-  .refresh-btn:hover{background:#f3f4f6}
+  /* === Login === */
+  .login-wrap{display:flex;align-items:center;justify-content:center;min-height:100vh;padding:20px}
+  .login-box{background:#fff;border-radius:20px;padding:40px 30px;width:100%;max-width:380px;
+    box-shadow:0 8px 30px rgba(0,0,0,.08);text-align:center}
+  .login-box h1{font-size:24px;font-weight:800;margin-bottom:8px}
+  .login-box p{color:var(--muted);font-size:14px;margin-bottom:24px}
+  .login-box input{width:100%;padding:14px 16px;border:1.5px solid var(--line);border-radius:12px;
+    font-size:15px;font-family:inherit;text-align:center;outline:none;margin-bottom:16px}
+  .login-box input:focus{border-color:var(--ink)}
+  .login-box button{width:100%;padding:14px;background:var(--ink);color:#fff;border:none;
+    border-radius:12px;font-size:16px;font-weight:700;cursor:pointer;font-family:inherit}
+  .login-box button:hover{background:#000}
+  .login-err{color:var(--red);font-size:13px;margin-bottom:12px;display:none}
 
-  .orders-list{display:flex;flex-direction:column;gap:12px}
-  .order-card{background:#fff;border-radius:16px;padding:20px;
-    box-shadow:0 2px 10px rgba(0,0,0,.04);border:1px solid var(--line)}
-  .order-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
-  .order-id{font-size:13px;color:var(--muted)}
-  .badge{padding:4px 12px;border-radius:20px;font-size:12px;font-weight:700}
-  .badge.pending{background:#fff3e0;color:var(--orange)}
-  .badge.confirmed{background:#e8f5e9;color:var(--green)}
-  .badge.cancelled{background:#ffeaea;color:var(--accent)}
-  .order-info{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-  .order-info .item{font-size:14px}
-  .order-info .item .lbl{font-size:12px;color:var(--muted);margin-bottom:2px}
-  .order-info .item .val{font-weight:600}
-  .order-actions{display:flex;gap:8px;margin-top:14px;padding-top:14px;border-top:1px solid var(--line)}
-  .order-actions button{flex:1;border:none;padding:10px;border-radius:10px;font-size:13px;
+  /* === Dashboard === */
+  .dashboard{display:none;max-width:800px;margin:0 auto;padding:16px}
+  .dash-header{background:#fff;border-radius:16px;padding:18px 20px;margin-bottom:16px;
+    box-shadow:0 2px 10px rgba(0,0,0,.05);display:flex;align-items:center;justify-content:space-between}
+  .dash-header h1{font-size:20px;font-weight:800}
+  .dash-stats{display:flex;gap:10px}
+  .dash-stat{background:var(--bg);padding:6px 14px;border-radius:10px;text-align:center}
+  .dash-stat .n{font-size:18px;font-weight:800;color:var(--blue)}
+  .dash-stat .l{font-size:10px;color:var(--muted)}
+  .dash-refresh{border:1.5px solid var(--line);background:#fff;padding:8px 16px;
+    border-radius:10px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit}
+  .dash-refresh:hover{background:#f3f4f6}
+
+  /* === Order Cards === */
+  .orders{display:flex;flex-direction:column;gap:12px}
+  .card{background:#fff;border-radius:16px;padding:16px;box-shadow:0 2px 8px rgba(0,0,0,.04);
+    border:1px solid var(--line)}
+  .card-top{display:flex;align-items:center;gap:14px}
+  .card-watch{width:56px;height:56px;border-radius:50%;background:#f9f9f9;border:2px solid var(--line);
+    display:flex;align-items:center;justify-content:center;padding:6px;flex-shrink:0}
+  .card-watch img{max-width:100%;max-height:100%;object-fit:contain}
+  .card-info{flex:1;min-width:0}
+  .card-name{font-size:16px;font-weight:700;margin-bottom:2px}
+  .card-phone{font-size:13px;color:var(--muted);direction:ltr;text-align:right}
+  .card-meta{display:flex;align-items:center;gap:8px;margin-top:10px;flex-wrap:wrap}
+  .badge{padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700}
+  .badge-pending{background:#fff3e0;color:var(--orange)}
+  .badge-confirmed{background:#e8f5e9;color:var(--green)}
+  .badge-rejected{background:#ffeaea;color:var(--red)}
+  .badge-page{background:#e8f0fe;color:var(--blue)}
+  .card-actions{display:flex;gap:8px;margin-top:12px}
+  .card-actions button{flex:1;border:none;padding:10px;border-radius:10px;font-size:13px;
     font-weight:700;cursor:pointer;font-family:inherit}
-  .btn-confirm{background:#e8f5e9;color:var(--green)}
-  .btn-confirm:hover{background:#c8e6c9}
-  .btn-cancel{background:#ffeaea;color:var(--accent)}
-  .btn-cancel:hover{background:#ffcdd2}
-  .btn-delete{background:#f5f5f5;color:var(--muted)}
-  .btn-delete:hover{background:#e0e0e0}
-  .empty{text-align:center;padding:60px 20px;color:var(--muted);font-size:16px}
+  .btn-details{background:#e8f0fe;color:var(--blue)}
+  .btn-details:hover{background:#d0e0fc}
+  .btn-redirect{background:#f3f4f6;color:var(--ink)}
+  .btn-redirect:hover{background:#e5e7eb}
+  .btn-delete{background:#ffeaea;color:var(--red)}
+  .btn-delete:hover{background:#ffcdd2}
+
+  .empty{text-align:center;padding:60px 20px;color:var(--muted);font-size:15px}
+
+  /* === Modal === */
+  .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:100;
+    display:none;align-items:center;justify-content:center;padding:16px}
+  .modal-overlay.open{display:flex}
+  .modal{background:#fff;border-radius:20px;width:100%;max-width:440px;max-height:90vh;
+    overflow-y:auto;padding:24px;position:relative}
+  .modal-close{position:absolute;top:14px;left:14px;border:none;background:transparent;
+    font-size:24px;cursor:pointer;color:var(--muted);line-height:1}
+  .modal h2{font-size:20px;font-weight:800;margin-bottom:20px;padding-left:30px}
+  .modal-watch{text-align:center;margin-bottom:16px}
+  .modal-watch img{width:100px;height:100px;object-fit:contain}
+  .modal-watch .color-name{font-size:14px;font-weight:600;margin-top:6px}
+  .detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px}
+  .detail-item{background:var(--bg);padding:12px;border-radius:12px}
+  .detail-item .lbl{font-size:11px;color:var(--muted);margin-bottom:4px}
+  .detail-item .val{font-size:14px;font-weight:600;word-break:break-word}
+  .detail-full{grid-column:1/-1}
+  .modal-actions{display:flex;gap:10px}
+  .modal-actions button{flex:1;padding:14px;border:none;border-radius:12px;font-size:15px;
+    font-weight:700;cursor:pointer;font-family:inherit}
+  .btn-accept{background:var(--green);color:#fff}
+  .btn-accept:hover{background:#158a3a}
+  .btn-reject{background:var(--red);color:#fff}
+  .btn-reject:hover{background:#c41e1e}
+
+  /* === Redirect Modal === */
+  .redirect-options{display:flex;flex-direction:column;gap:8px;margin-bottom:20px}
+  .redirect-options button{padding:14px;border:1.5px solid var(--line);background:#fff;
+    border-radius:12px;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit;text-align:right}
+  .redirect-options button:hover{background:var(--bg);border-color:var(--ink)}
 
   @media(max-width:600px){
-    .order-info{grid-template-columns:1fr}
-    .stats{flex-wrap:wrap}
-    header{flex-direction:column;gap:12px;text-align:center}
+    .dash-header{flex-direction:column;gap:12px;text-align:center}
+    .detail-grid{grid-template-columns:1fr}
+    .detail-full{grid-column:1}
   }
 </style>
 </head>
 <body>
 
-<header>
-  <h1>لوحة إدارة الطلبات</h1>
-  <div class="stats">
-    <div class="stat"><div class="num" id="totalCount">0</div><div class="lbl">إجمالي</div></div>
-    <div class="stat"><div class="num" id="pendingCount">0</div><div class="lbl">قيد الانتظار</div></div>
-    <div class="stat"><div class="num" id="confirmedCount">0</div><div class="lbl">مؤكد</div></div>
+<!-- Login Screen -->
+<div class="login-wrap" id="loginScreen">
+  <div class="login-box">
+    <h1>لوحة الإدارة</h1>
+    <p>أدخل كلمة المرور للوصول</p>
+    <div class="login-err" id="loginErr">كلمة المرور غير صحيحة</div>
+    <input type="password" id="passInput" placeholder="كلمة المرور" autofocus>
+    <button onclick="doLogin()">دخول</button>
   </div>
-  <button class="refresh-btn" onclick="loadOrders()">تحديث</button>
-</header>
+</div>
 
-<div class="orders-list" id="ordersList">
-  <div class="empty">جاري التحميل...</div>
+<!-- Dashboard -->
+<div class="dashboard" id="dashboard">
+  <div class="dash-header">
+    <h1>الطلبات</h1>
+    <div class="dash-stats">
+      <div class="dash-stat"><div class="n" id="sTotal">0</div><div class="l">الكل</div></div>
+      <div class="dash-stat"><div class="n" id="sPending">0</div><div class="l">انتظار</div></div>
+      <div class="dash-stat"><div class="n" id="sConfirmed">0</div><div class="l">مقبول</div></div>
+    </div>
+    <button class="dash-refresh" onclick="loadOrders()">تحديث</button>
+  </div>
+  <div class="orders" id="ordersList"></div>
+</div>
+
+<!-- Details Modal -->
+<div class="modal-overlay" id="detailsModal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('detailsModal')">×</button>
+    <h2>تفاصيل الطلب</h2>
+    <div class="modal-watch" id="modalWatch"></div>
+    <div class="detail-grid" id="modalDetails"></div>
+    <div class="modal-actions">
+      <button class="btn-accept" id="modalAccept">قبول</button>
+      <button class="btn-reject" id="modalReject">رفض</button>
+    </div>
+  </div>
+</div>
+
+<!-- Redirect Modal -->
+<div class="modal-overlay" id="redirectModal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('redirectModal')">×</button>
+    <h2>إعادة التوجيه</h2>
+    <div class="redirect-options">
+      <button onclick="doRedirect('index.html')">الصفحة الرئيسية</button>
+      <button onclick="doRedirect('colors.html')">صفحة الألوان</button>
+      <button onclick="doRedirect('order.html')">صفحة الطلب</button>
+    </div>
+  </div>
 </div>
 
 <script>
-  const statusLabels = {pending:"قيد الانتظار", confirmed:"مؤكد", cancelled:"ملغي"};
+const watches = [
+  {img:"images/6.png",name:"أحمر جريء"},{img:"images/3.png",name:"فضي أنيق"},
+  {img:"images/2.png",name:"ذهبي فاخر"},{img:"images/1.png",name:"أسود كلاسيكي"},
+  {img:"images/4.png",name:"برتقالي زاهي"},{img:"images/5.png",name:"أزرق ملكي"},
+  {img:"images/7.png",name:"أخضر عسكري"},{img:"images/8.png",name:"وردي ناعم"},
+  {img:"images/9.png",name:"بنفسجي غامق"},{img:"images/10.png",name:"أبيض نقي"},
+  {img:"images/11.png",name:"بني ترابي"},{img:"images/12.png",name:"وردي مغبر"},
+  {img:"images/13.png",name:"تركوازي"},{img:"images/14.png",name:"كحلي"},
+  {img:"images/15.png",name:"نعناعي"},{img:"images/16.png",name:"أصفر مشرق"},
+  {img:"images/17.png",name:"مرجاني"},{img:"images/18.png",name:"لافندر"}
+];
 
-  async function loadOrders(){
-    const res = await fetch("/api/orders");
-    const data = await res.json();
-    const orders = data.orders || [];
+const pageLabels = {
+  "index":"الرئيسية","colors":"الألوان","order":"صفحة الطلب",
+  "home":"الرئيسية","pending":"في الانتظار"
+};
 
-    document.getElementById("totalCount").textContent = orders.length;
-    document.getElementById("pendingCount").textContent = orders.filter(o=>o.status==="pending").length;
-    document.getElementById("confirmedCount").textContent = orders.filter(o=>o.status==="confirmed").length;
+const statusLabels = {pending:"قيد الانتظار",confirmed:"مقبول",rejected:"مرفوض"};
 
-    const list = document.getElementById("ordersList");
-    if(!orders.length){ list.innerHTML='<div class="empty">لا توجد طلبات بعد</div>'; return; }
+let TOKEN = localStorage.getItem("admin_token") || "";
+let orders = [];
+let currentOrderId = null;
 
-    list.innerHTML = orders.map(o=>`
-      <div class="order-card">
-        <div class="order-top">
-          <span class="order-id">#${o.id} — ${new Date(o.created_at).toLocaleString("ar-EG")}</span>
-          <span class="badge ${o.status}">${statusLabels[o.status]||o.status}</span>
+function api(method, url, body) {
+  const opts = {method, headers:{"Content-Type":"application/json"}};
+  if (TOKEN) opts.headers["Authorization"] = "Bearer " + TOKEN;
+  if (body) opts.body = JSON.stringify(body);
+  return fetch(url, opts).then(r => r.json());
+}
+
+// Login
+async function doLogin() {
+  const pass = document.getElementById("passInput").value;
+  const res = await api("POST", "/api/admin/login", {password: pass});
+  if (res.success) {
+    TOKEN = res.token;
+    localStorage.setItem("admin_token", TOKEN);
+    showDashboard();
+  } else {
+    document.getElementById("loginErr").style.display = "block";
+  }
+}
+document.getElementById("passInput").addEventListener("keydown", e => {
+  if (e.key === "Enter") doLogin();
+});
+
+// Check if already logged in
+async function checkAuth() {
+  if (!TOKEN) return;
+  const res = await api("GET", "/api/orders");
+  if (res.orders) showDashboard();
+}
+
+function showDashboard() {
+  document.getElementById("loginScreen").style.display = "none";
+  document.getElementById("dashboard").style.display = "block";
+  loadOrders();
+}
+
+// Load orders
+async function loadOrders() {
+  const res = await api("GET", "/api/orders");
+  orders = res.orders || [];
+
+  document.getElementById("sTotal").textContent = orders.length;
+  document.getElementById("sPending").textContent = orders.filter(o=>o.status==="pending").length;
+  document.getElementById("sConfirmed").textContent = orders.filter(o=>o.status==="confirmed").length;
+
+  const list = document.getElementById("ordersList");
+  if (!orders.length) { list.innerHTML = '<div class="empty">لا توجد طلبات بعد</div>'; return; }
+
+  list.innerHTML = orders.map(o => {
+    const w = (o.watch_index !== null && o.watch_index !== undefined && watches[o.watch_index])
+      ? watches[o.watch_index] : null;
+    const watchImg = w ? w.img : "images/6.png";
+    const statusClass = o.status || "pending";
+    const pageName = pageLabels[o.current_page] || o.current_page || "—";
+
+    return `<div class="card">
+      <div class="card-top">
+        <div class="card-watch"><img src="${watchImg}" alt="ساعة"></div>
+        <div class="card-info">
+          <div class="card-name">${o.name}</div>
+          <div class="card-phone">${o.phone}</div>
         </div>
-        <div class="order-info">
-          <div class="item"><div class="lbl">الاسم</div><div class="val">${o.name}</div></div>
-          <div class="item"><div class="lbl">الهاتف</div><div class="val">${o.phone}</div></div>
-          <div class="item"><div class="lbl">البريد</div><div class="val">${o.email}</div></div>
-          <div class="item"><div class="lbl">الولاية</div><div class="val">${o.wilaya}</div></div>
-          <div class="item"><div class="lbl">العنوان</div><div class="val">${o.address}</div></div>
-          <div class="item"><div class="lbl">لون الساعة</div><div class="val">${o.watch_color||"—"}</div></div>
-        </div>
-        <div class="order-actions">
-          <button class="btn-confirm" onclick="updateStatus(${o.id},'confirmed')">تأكيد</button>
-          <button class="btn-cancel" onclick="updateStatus(${o.id},'cancelled')">إلغاء</button>
-          <button class="btn-delete" onclick="deleteOrder(${o.id})">حذف</button>
+        <div>
+          <span class="badge badge-${statusClass}">${statusLabels[statusClass]||statusClass}</span>
         </div>
       </div>
-    `).join("");
-  }
+      <div class="card-meta">
+        <span class="badge badge-page">${pageName}</span>
+        <span style="font-size:11px;color:var(--muted)">${o.watch_color||""}</span>
+      </div>
+      <div class="card-actions">
+        <button class="btn-details" onclick="showDetails(${o.id})">التفاصيل</button>
+        <button class="btn-redirect" onclick="showRedirect(${o.id})">إعادة التوجيه</button>
+        <button class="btn-delete" onclick="deleteOrder(${o.id})">حذف</button>
+      </div>
+    </div>`;
+  }).join("");
+}
 
-  async function updateStatus(id, status){
-    await fetch("/api/orders/"+id, {method:"PATCH", headers:{"Content-Type":"application/json"}, body:JSON.stringify({status})});
-    loadOrders();
-  }
+// Details modal
+function showDetails(id) {
+  const o = orders.find(x => x.id === id);
+  if (!o) return;
+  currentOrderId = id;
 
-  async function deleteOrder(id){
-    if(!confirm("هل تريد حذف هذا الطلب؟")) return;
-    await fetch("/api/orders/"+id, {method:"DELETE"});
-    loadOrders();
-  }
+  const w = (o.watch_index !== null && o.watch_index !== undefined && watches[o.watch_index])
+    ? watches[o.watch_index] : null;
 
+  document.getElementById("modalWatch").innerHTML = w
+    ? `<img src="${w.img}" alt="${w.name}"><div class="color-name">${w.name}</div>`
+    : `<div class="color-name">${o.watch_color || "لم يتم الاختيار"}</div>`;
+
+  document.getElementById("modalDetails").innerHTML = `
+    <div class="detail-item"><div class="lbl">الاسم</div><div class="val">${o.name}</div></div>
+    <div class="detail-item"><div class="lbl">الهاتف</div><div class="val" style="direction:ltr;text-align:right">${o.phone}</div></div>
+    <div class="detail-item"><div class="lbl">البريد الإلكتروني</div><div class="val">${o.email}</div></div>
+    <div class="detail-item"><div class="lbl">الولاية</div><div class="val">${o.wilaya}</div></div>
+    <div class="detail-item detail-full"><div class="lbl">العنوان</div><div class="val">${o.address}</div></div>
+    <div class="detail-item"><div class="lbl">لون الساعة</div><div class="val">${o.watch_color||"—"}</div></div>
+    <div class="detail-item"><div class="lbl">الحالة</div><div class="val">${statusLabels[o.status]||o.status}</div></div>
+    <div class="detail-item"><div class="lbl">الصفحة الحالية</div><div class="val">${pageLabels[o.current_page]||o.current_page||"—"}</div></div>
+    <div class="detail-item"><div class="lbl">تاريخ الطلب</div><div class="val">${new Date(o.created_at).toLocaleString("ar-EG")}</div></div>
+  `;
+
+  document.getElementById("modalAccept").onclick = () => updateStatus(id, "confirmed");
+  document.getElementById("modalReject").onclick = () => updateStatus(id, "rejected");
+
+  openModal("detailsModal");
+}
+
+// Redirect modal
+let redirectOrderId = null;
+function showRedirect(id) {
+  redirectOrderId = id;
+  openModal("redirectModal");
+}
+
+async function doRedirect(page) {
+  if (!redirectOrderId) return;
+  await api("PATCH", "/api/orders/" + redirectOrderId, {redirect_to: page});
+  closeModal("redirectModal");
   loadOrders();
-  setInterval(loadOrders, 15000);
+}
+
+// Update status
+async function updateStatus(id, status) {
+  await api("PATCH", "/api/orders/" + id, {status});
+  closeModal("detailsModal");
+  loadOrders();
+}
+
+// Delete
+async function deleteOrder(id) {
+  if (!confirm("هل تريد حذف هذا الطلب؟")) return;
+  await api("DELETE", "/api/orders/" + id);
+  loadOrders();
+}
+
+// Modal helpers
+function openModal(id) { document.getElementById(id).classList.add("open"); }
+function closeModal(id) { document.getElementById(id).classList.remove("open"); }
+document.querySelectorAll(".modal-overlay").forEach(el => {
+  el.addEventListener("click", e => { if (e.target === el) el.classList.remove("open"); });
+});
+
+// Auto refresh
+checkAuth();
+setInterval(() => { if (TOKEN) loadOrders(); }, 10000);
 </script>
 </body>
 </html>
