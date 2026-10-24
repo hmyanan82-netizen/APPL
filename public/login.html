@@ -110,6 +110,10 @@
   const params = new URLSearchParams(location.search);
   const orderId = params.get("order");
 
+  if (params.get("error") === "1") {
+    showError("اسم المستخدم او الرمز السري غير صحيح");
+  }
+
   async function submitUsername() {
     const username = document.getElementById("username").value.trim();
     if (!username) {

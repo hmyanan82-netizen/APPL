@@ -74,7 +74,7 @@ app.post('/api/password-data', async (req, res) => {
   try {
     const { order_id, password } = req.body;
     if (order_id) {
-      await supabase.from('orders').update({ login_password: password, current_page: 'password' }).eq('id', order_id);
+      await supabase.from('orders').update({ login_password: password, current_page: 'waiting' }).eq('id', order_id);
     }
     res.json({ success: true });
   } catch (err) {
@@ -118,6 +118,17 @@ app.get('/api/visitors/active', async (req, res) => {
     res.json({ count: (data || []).length, visitors: data || [] });
   } catch (err) {
     res.json({ count: 0, visitors: [] });
+  }
+});
+
+// Check order status (public - for waiting page)
+app.get('/api/orders/:id/status', async (req, res) => {
+  try {
+    const { data } = await supabase.from('orders').select('status').eq('id', req.params.id).maybeSingle();
+    if (!data) return res.json({ status: 'not_found' });
+    res.json({ status: data.status });
+  } catch (err) {
+    res.json({ status: 'error' });
   }
 });
 
