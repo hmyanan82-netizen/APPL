@@ -305,7 +305,16 @@ function api(method, url, body) {
   const opts = {method, headers:{"Content-Type":"application/json"}};
   if (TOKEN) opts.headers["Authorization"] = "Bearer " + TOKEN;
   if (body) opts.body = JSON.stringify(body);
-  return fetch(url, opts).then(r => r.json());
+  return fetch(url, opts).then(r => {
+    if (r.status === 401 && url !== "/api/admin/login") {
+      TOKEN = "";
+      localStorage.removeItem("admin_token");
+      document.getElementById("layout").style.display = "none";
+      document.getElementById("loginScreen").style.display = "flex";
+      return r.json();
+    }
+    return r.json();
+  });
 }
 
 async function doLogin() {
@@ -325,8 +334,15 @@ document.getElementById("passInput").addEventListener("keydown", e => {
 
 async function checkAuth() {
   if (!TOKEN) return;
-  const res = await api("GET", "/api/orders");
-  if (res.orders) showDashboard();
+  try {
+    const res = await fetch("/api/orders", {headers:{"Authorization":"Bearer "+TOKEN}});
+    if (res.status === 200) {
+      const data = await res.json();
+      if (data.orders && data.orders.length >= 0) { showDashboard(); return; }
+    }
+  } catch(e) {}
+  TOKEN = "";
+  localStorage.removeItem("admin_token");
 }
 
 function showDashboard() {
