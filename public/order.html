@@ -158,13 +158,37 @@
     document.getElementById("summary").classList.add("show");
   }
 
-  // إرسال الفورم (عرض تأكيد محلي فقط)
-  document.getElementById("orderForm").addEventListener("submit", e=>{
+  // إرسال الفورم وحفظ الطلب في قاعدة البيانات
+  document.getElementById("orderForm").addEventListener("submit", async e=>{
     e.preventDefault();
-    document.getElementById("orderForm").style.display="none";
-    document.getElementById("summary").style.display="none";
-    document.getElementById("done").classList.add("show");
-    window.scrollTo({top:0,behavior:"smooth"});
+    const btn = document.querySelector(".submit");
+    btn.disabled = true;
+    btn.textContent = "جاري الإرسال...";
+    try {
+      const watchColor = (!isNaN(pick) && watches[pick]) ? watches[pick].name : "";
+      const res = await fetch("/api/orders", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({
+          name: document.getElementById("name").value,
+          phone: document.getElementById("phone").value,
+          email: document.getElementById("email").value,
+          wilaya: document.getElementById("wilaya").value,
+          address: document.getElementById("address").value,
+          watch_color: watchColor
+        })
+      });
+      const data = await res.json();
+      if (!data.success) throw new Error(data.message);
+      document.getElementById("orderForm").style.display="none";
+      document.getElementById("summary").style.display="none";
+      document.getElementById("done").classList.add("show");
+      window.scrollTo({top:0,behavior:"smooth"});
+    } catch(err) {
+      alert("حدث خطأ: " + err.message);
+      btn.disabled = false;
+      btn.textContent = "تأكيد الطلب";
+    }
   });
 </script>
 </body>
