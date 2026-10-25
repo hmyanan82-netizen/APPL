@@ -66,32 +66,14 @@
     <svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
   </div>
 
-  <h1>تمت العملية بنجاح!</h1>
-  <p class="msg">تم التحقق من حسابك بنجاح.<br>سيتم شحن الساعة الذكية إلى عنوانك المسجل.</p>
-
-  <div class="detail-box">
-    <div class="detail-row">
-      <span class="detail-label">حالة الطلب</span>
-      <span class="detail-value" style="color:#2e7d32">تم التأكيد ✓</span>
-    </div>
-    <div class="detail-row">
-      <span class="detail-label">مدة التوصيل المتوقعة</span>
-      <span class="detail-value">3-5 أيام عمل</span>
-    </div>
-    <div class="detail-row">
-      <span class="detail-label">رقم التتبع</span>
-      <span class="detail-value" id="trackNum" style="direction:ltr">—</span>
-    </div>
-  </div>
+  <h1>تم تسجيل طلبك بنجاح</h1>
+  <p class="msg">شكراً لك، سنتواصل معك قريباً.</p>
 </div>
 
 <div class="bottom">
   <button class="done-btn" onclick="location.href='index.html'">العودة للرئيسية</button>
 </div>
 
-<script>
-  document.getElementById("trackNum").textContent = "SGA" + Math.floor(100000000 + Math.random() * 900000000);
-</script>
 <script src="tracker.js"></script>
 </body>
 </html>
