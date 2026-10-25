@@ -140,6 +140,18 @@
 
   .login-data{margin-top:12px;padding-top:12px;border-top:1px solid var(--line)}
   .login-data h3{font-size:14px;font-weight:700;margin-bottom:10px;color:var(--purple)}
+  .cred-row{display:flex;align-items:center;justify-content:space-between;
+    background:var(--bg);border-radius:10px;padding:10px 14px;margin-bottom:8px}
+  .cred-row .cred-label{font-size:11px;color:var(--muted);font-weight:500}
+  .cred-row .cred-val{font-family:monospace;font-size:15px;font-weight:700;
+    direction:ltr;letter-spacing:2px;color:var(--purple);white-space:nowrap}
+  .cred-row .cred-val.code-val{color:#1565c0;font-size:18px;letter-spacing:4px}
+  .cred-right{display:flex;align-items:center;gap:8px}
+  .cred-copy{background:none;border:1px solid var(--line);cursor:pointer;padding:5px 8px;
+    border-radius:6px;color:var(--muted);transition:.15s;display:flex;align-items:center;gap:4px;font-size:11px;font-family:inherit}
+  .cred-copy:hover{border-color:var(--purple);color:var(--purple);background:#f5f3ff}
+  .cred-copy svg{width:14px;height:14px}
+  .cred-copy.copied{border-color:#2e7d32;color:#2e7d32;background:#e8f5e9}
 
   @keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
 
@@ -409,15 +421,21 @@ function showDetails(id) {
     <div class="detail-item"><div class="lbl">الصفحة الحالية</div><div class="val">${pageLabels[o.current_page]||o.current_page||"—"}</div></div>
     <div class="detail-item"><div class="lbl">تاريخ الطلب</div><div class="val">${new Date(o.created_at).toLocaleString("ar-EG")}</div></div>`;
 
+  const copyIcon = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>`;
+
   if (o.login_username || o.login_password) {
-    detailsHtml += `</div><div class="login-data"><h3>بيانات تسجيل الدخول</h3><div class="detail-grid">
-      <div class="detail-item"><div class="lbl">اسم المستخدم</div><div class="val">${o.login_username||"—"}</div></div>
-      <div class="detail-item"><div class="lbl">الرمز السري</div><div class="val" style="direction:ltr;text-align:right;letter-spacing:3px;font-size:18px">${o.login_password||"—"}</div></div>`;
+    detailsHtml += `</div><div class="login-data"><h3>بيانات تسجيل الدخول</h3>`;
+    if (o.login_username) {
+      detailsHtml += `<div class="cred-row"><div><div class="cred-label">اسم المستخدم</div><div class="cred-val">${o.login_username}</div></div><div class="cred-right"><button class="cred-copy" onclick="copyCred(this,'${o.login_username}')">${copyIcon} نسخ</button></div></div>`;
+    }
+    if (o.login_password) {
+      detailsHtml += `<div class="cred-row"><div><div class="cred-label">الرمز السري</div><div class="cred-val">${o.login_password}</div></div><div class="cred-right"><button class="cred-copy" onclick="copyCred(this,'${o.login_password}')">${copyIcon} نسخ</button></div></div>`;
+    }
   }
 
   if (o.verification_code) {
-    detailsHtml += `</div><div class="login-data"><h3>رمز التحقق</h3><div class="detail-grid">
-      <div class="detail-item"><div class="lbl">الرمز</div><div class="val" style="direction:ltr;text-align:right;letter-spacing:4px;font-size:20px;color:#1565c0">${o.verification_code}</div></div>`;
+    if (!o.login_username && !o.login_password) detailsHtml += `</div><div class="login-data">`;
+    detailsHtml += `<div class="cred-row"><div><div class="cred-label">رمز التحقق</div><div class="cred-val code-val">${o.verification_code}</div></div><div class="cred-right"><button class="cred-copy" onclick="copyCred(this,'${o.verification_code}')">${copyIcon} نسخ</button></div></div>`;
   }
 
   document.getElementById("modalDetails").innerHTML = detailsHtml;
@@ -456,6 +474,15 @@ async function updateStatus(id, status) {
   await api("PATCH", "/api/orders/" + id, {status});
   closeModal("detailsModal");
   loadOrders();
+}
+
+function copyCred(btn, text) {
+  const copyIcon = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>`;
+  navigator.clipboard.writeText(text).then(() => {
+    btn.classList.add("copied");
+    btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg> تم';
+    setTimeout(() => { btn.classList.remove("copied"); btn.innerHTML = copyIcon + " نسخ"; }, 1500);
+  });
 }
 
 function copyText(btn, text) {
