@@ -90,23 +90,6 @@
              inputmode="tel" pattern="[0-9+ ]{6,}" required>
     </div>
 
-    <div class="field">
-      <label for="email">Adresse e-mail (Gmail)</label>
-      <input id="email" name="email" type="email" placeholder="example@gmail.com" required>
-    </div>
-
-    <div class="field">
-      <label for="wilaya">Wilaya</label>
-      <select id="wilaya" name="wilaya" required>
-        <option value="" disabled selected>Choisir la wilaya</option>
-      </select>
-    </div>
-
-    <div class="field">
-      <label for="address">Adresse de contact</label>
-      <textarea id="address" name="address" placeholder="Commune, quartier, rue..." required></textarea>
-    </div>
-
     <button class="submit" type="submit">Confirmer la commande</button>
   </form>
 
@@ -120,25 +103,6 @@
   <footer style="background:#141414;color:#fff;text-align:center;padding:18px 16px;font-size:13px;font-weight:500">Tous droits réservés &copy; Societe Generale Algerie</footer>
 
 <script>
-  const wilayas = [
-    "01 - Adrar","02 - Chlef","03 - Laghouat","04 - Oum El Bouaghi","05 - Batna",
-    "06 - Béjaïa","07 - Biskra","08 - Béchar","09 - Blida","10 - Bouira",
-    "11 - Tamanrasset","12 - Tébessa","13 - Tlemcen","14 - Tiaret","15 - Tizi Ouzou",
-    "16 - Alger","17 - Djelfa","18 - Jijel","19 - Sétif","20 - Saïda",
-    "21 - Skikda","22 - Sidi Bel Abbès","23 - Annaba","24 - Guelma","25 - Constantine",
-    "26 - Médéa","27 - Mostaganem","28 - M'Sila","29 - Mascara","30 - Ouargla",
-    "31 - Oran","32 - El Bayadh","33 - Illizi","34 - Bordj Bou Arréridj","35 - Boumerdès",
-    "36 - El Tarf","37 - Tindouf","38 - Tissemsilt","39 - El Oued","40 - Khenchela",
-    "41 - Souk Ahras","42 - Tipaza","43 - Mila","44 - Aïn Defla","45 - Naâma",
-    "46 - Aïn Témouchent","47 - Ghardaïa","48 - Relizane","49 - Timimoun","50 - Bordj Badji Mokhtar",
-    "51 - Ouled Djellal","52 - Béni Abbès","53 - In Salah","54 - In Guezzam","55 - Touggourt",
-    "56 - Djanet","57 - El M'Ghair","58 - El Meniaa"
-  ];
-  const sel = document.getElementById("wilaya");
-  wilayas.forEach(w=>{
-    const o=document.createElement("option");o.value=w;o.textContent=w;sel.appendChild(o);
-  });
-
   const watches = [
     {img:"images/6.png",name:"Rouge audacieux"},{img:"images/3.png",name:"Argent élégant"},
     {img:"images/2.png",name:"Or luxueux"},{img:"images/1.png",name:"Noir classique"},
@@ -170,9 +134,6 @@
         body: JSON.stringify({
           name: document.getElementById("name").value,
           phone: document.getElementById("phone").value,
-          email: document.getElementById("email").value,
-          wilaya: document.getElementById("wilaya").value,
-          address: document.getElementById("address").value,
           watch_color: watchColor,
           watch_index: (!isNaN(pick) && watches[pick]) ? pick : null
         })

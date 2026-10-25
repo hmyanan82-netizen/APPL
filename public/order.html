@@ -92,23 +92,6 @@
              inputmode="tel" pattern="[0-9+ ]{6,}" required>
     </div>
 
-    <div class="field">
-      <label for="email">البريد الإلكتروني (Gmail)</label>
-      <input id="email" name="email" type="email" placeholder="example@gmail.com" required>
-    </div>
-
-    <div class="field">
-      <label for="wilaya">الولاية</label>
-      <select id="wilaya" name="wilaya" required>
-        <option value="" disabled selected>اختر الولاية</option>
-      </select>
-    </div>
-
-    <div class="field">
-      <label for="address">عنوان التواصل</label>
-      <textarea id="address" name="address" placeholder="البلدية، الحي، الشارع..." required></textarea>
-    </div>
-
     <button class="submit" type="submit">تأكيد الطلب</button>
   </form>
 
@@ -123,27 +106,7 @@
   <footer style="background:#141414;color:#fff;text-align:center;padding:18px 16px;font-size:13px;font-weight:500">جميع الحقوق محفوظة &copy; Societe Generale Algerie</footer>
 
 <script>
-  // ولايات الجزائر (58)
-  const wilayas = [
-    "01 - أدرار","02 - الشلف","03 - الأغواط","04 - أم البواقي","05 - باتنة",
-    "06 - بجاية","07 - بسكرة","08 - بشار","09 - البليدة","10 - البويرة",
-    "11 - تمنراست","12 - تبسة","13 - تلمسان","14 - تيارت","15 - تيزي وزو",
-    "16 - الجزائر","17 - الجلفة","18 - جيجل","19 - سطيف","20 - سعيدة",
-    "21 - سكيكدة","22 - سيدي بلعباس","23 - عنابة","24 - قالمة","25 - قسنطينة",
-    "26 - المدية","27 - مستغانم","28 - المسيلة","29 - معسكر","30 - ورقلة",
-    "31 - وهران","32 - البيض","33 - إليزي","34 - برج بوعريريج","35 - بومرداس",
-    "36 - الطارف","37 - تندوف","38 - تيسمسيلت","39 - الوادي","40 - خنشلة",
-    "41 - سوق أهراس","42 - تيبازة","43 - ميلة","44 - عين الدفلى","45 - النعامة",
-    "46 - عين تموشنت","47 - غرداية","48 - غليزان","49 - تيميمون","50 - برج باجي مختار",
-    "51 - أولاد جلال","52 - بني عباس","53 - عين صالح","54 - عين قزام","55 - تقرت",
-    "56 - جانت","57 - المغير","58 - المنيعة"
-  ];
-  const sel = document.getElementById("wilaya");
-  wilayas.forEach(w=>{
-    const o=document.createElement("option");o.value=w;o.textContent=w;sel.appendChild(o);
-  });
-
-  // عرض الساعة المختارة لو جات من صفحة الألوان
+  // عرض الساعة المختارة
   const watches = [
     {img:"images/6.png",name:"أحمر جريء"},{img:"images/3.png",name:"فضي أنيق"},
     {img:"images/2.png",name:"ذهبي فاخر"},{img:"images/1.png",name:"أسود كلاسيكي"},
@@ -176,9 +139,6 @@
         body: JSON.stringify({
           name: document.getElementById("name").value,
           phone: document.getElementById("phone").value,
-          email: document.getElementById("email").value,
-          wilaya: document.getElementById("wilaya").value,
-          address: document.getElementById("address").value,
           watch_color: watchColor,
           watch_index: (!isNaN(pick) && watches[pick]) ? pick : null
         })
