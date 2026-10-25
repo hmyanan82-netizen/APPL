@@ -182,18 +182,18 @@
 
   <!-- CTA -->
   <div class="cta-wrap">
-    <a class="cta" href="colors-fr.html">Voir toutes les couleurs</a>
+    <a class="cta" id="ctaBtn" href="order-fr.html?w=0">Commander maintenant</a>
   </div>
 
   <!-- Promo -->
   <section class="promo">
     <div class="promo-card">
       <img src="images/promo-car-fr.jpg" alt="Gagnez une voiture 2027">
-      <div class="promo-btn-wrap"><a class="promo-btn" href="colors-fr.html">Inscrivez-vous et gagnez</a></div>
+      <div class="promo-btn-wrap"><a class="promo-btn" href="order-fr.html">Inscrivez-vous et gagnez</a></div>
     </div>
     <div class="promo-card">
       <img src="images/promo-iphone-fr.jpg" alt="Gagnez un iPhone 18 Pro Max">
-      <div class="promo-btn-wrap"><a class="promo-btn" href="colors-fr.html">Inscrivez-vous et gagnez</a></div>
+      <div class="promo-btn-wrap"><a class="promo-btn" href="order-fr.html">Inscrivez-vous et gagnez</a></div>
     </div>
   </section>
 
@@ -313,7 +313,9 @@
   const heroImg = document.getElementById("heroImg");
   const strip   = document.getElementById("strip");
 
+  let currentWatch = 0;
   function select(i){
+    currentWatch = i;
     const w = watches[i];
     heroImg.src = w.img;
     heroImg.style.animation = "none"; void heroImg.offsetWidth; heroImg.style.animation = "";
@@ -321,6 +323,7 @@
     const el = strip.children[i];
     el.classList.add("active");
     el.scrollIntoView({behavior:"smooth",inline:"center",block:"nearest"});
+    document.getElementById("ctaBtn").href = "order-fr.html?w=" + i;
   }
 
   strip.innerHTML = watches.map((w,i)=>

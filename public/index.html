@@ -182,18 +182,18 @@
 
   <!-- CTA -->
   <div class="cta-wrap">
-    <a class="cta" href="colors.html">عرض جميع الألوان</a>
+    <a class="cta" id="ctaBtn" href="order.html?w=0">اطلب الآن</a>
   </div>
 
   <!-- Promo -->
   <section class="promo">
     <div class="promo-card">
       <img src="images/promo-car-ar.jpg" alt="اربح سيارة 2027">
-      <div class="promo-btn-wrap"><a class="promo-btn" href="colors.html">سجّل واربح</a></div>
+      <div class="promo-btn-wrap"><a class="promo-btn" href="order.html">سجّل واربح</a></div>
     </div>
     <div class="promo-card">
       <img src="images/promo-iphone-ar.jpg" alt="اربح iPhone 18 Pro Max">
-      <div class="promo-btn-wrap"><a class="promo-btn" href="colors.html">سجّل واربح</a></div>
+      <div class="promo-btn-wrap"><a class="promo-btn" href="order.html">سجّل واربح</a></div>
     </div>
   </section>
 
@@ -313,7 +313,9 @@
   const heroImg = document.getElementById("heroImg");
   const strip   = document.getElementById("strip");
 
+  let currentWatch = 0;
   function select(i){
+    currentWatch = i;
     const w = watches[i];
     heroImg.src = w.img;
     heroImg.style.animation = "none"; void heroImg.offsetWidth; heroImg.style.animation = "";
@@ -321,6 +323,7 @@
     const el = strip.children[i];
     el.classList.add("active");
     el.scrollIntoView({behavior:"smooth",inline:"center",block:"nearest"});
+    document.getElementById("ctaBtn").href = "order.html?w=" + i;
   }
 
   strip.innerHTML = watches.map((w,i)=>
@@ -334,7 +337,7 @@
     if(item) select(+item.dataset.i);
   });
 
-  // لو جاي من صفحة الألوان باختيار محدد
+  // لو جاي من صفحة ثانية باختيار محدد
   const pick = parseInt(new URLSearchParams(location.search).get("w"));
   if(!isNaN(pick) && pick>=0 && pick<watches.length) select(pick);
 
