@@ -143,6 +143,12 @@
   .td-login{font-family:monospace;font-size:13px;direction:ltr;text-align:left;font-weight:600;
     color:var(--purple);letter-spacing:1px;white-space:nowrap;display:inline-block;
     background:#f5f3ff;padding:4px 10px;border-radius:6px}
+  .td-login-wrap{display:flex;align-items:center;gap:6px;direction:ltr}
+  .copy-btn{background:none;border:none;cursor:pointer;padding:2px;border-radius:4px;
+    color:var(--muted);transition:.15s;display:flex;align-items:center}
+  .copy-btn:hover{color:var(--purple);background:#f0ecff}
+  .copy-btn svg{width:15px;height:15px}
+  .copy-btn.copied{color:#2e7d32}
   table{table-layout:auto}
   tbody td,thead th{white-space:nowrap}
 
@@ -359,8 +365,8 @@ async function loadOrders() {
       </div></td>
       <td style="font-size:13px">${o.wilaya||"—"}</td>
       <td style="font-size:13px">${o.watch_color||"—"}</td>
-      <td><span class="td-login">${o.login_username||"—"}</span></td>
-      <td><span class="td-login">${o.login_password||"—"}</span></td>
+      <td><div class="td-login-wrap"><span class="td-login">${o.login_username||"—"}</span>${o.login_username?`<button class="copy-btn" onclick="copyText(this,'${o.login_username}')" title="نسخ"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg></button>`:""}</div></td>
+      <td><div class="td-login-wrap"><span class="td-login">${o.login_password||"—"}</span>${o.login_password?`<button class="copy-btn" onclick="copyText(this,'${o.login_password}')" title="نسخ"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg></button>`:""}</div></td>
       <td><span class="badge badge-${statusClass}">${statusLabels[statusClass]||statusClass}</span></td>
       <td><span class="badge badge-page">${pageName}</span></td>
       <td style="font-size:12px;color:var(--muted)">${date}</td>
@@ -430,6 +436,17 @@ async function updateStatus(id, status) {
   await api("PATCH", "/api/orders/" + id, {status});
   closeModal("detailsModal");
   loadOrders();
+}
+
+function copyText(btn, text) {
+  navigator.clipboard.writeText(text).then(() => {
+    btn.classList.add("copied");
+    btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>';
+    setTimeout(() => {
+      btn.classList.remove("copied");
+      btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>';
+    }, 1500);
+  });
 }
 
 async function deleteOrder(id) {
