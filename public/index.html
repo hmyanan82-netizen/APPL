@@ -130,8 +130,16 @@
   @media (min-width:440px){.feat-grid{grid-template-columns:repeat(3,1fr)}}
 
   /* ===== Footer ===== */
-  .footer{background:#141414;color:#fff;text-align:center;padding:18px 16px;
-    font-size:13px;font-weight:500;letter-spacing:.3px}
+  .footer{background:#141414;color:#fff;padding:0;font-size:13px;font-weight:400}
+  .footer-top{padding:32px 20px 20px;display:flex;flex-direction:column;gap:24px}
+  .footer-logo{display:flex;align-items:center;justify-content:center}
+  .footer-logo img{height:50px}
+  .footer-cols{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+  .footer-col h4{font-size:14px;font-weight:700;margin-bottom:10px;color:#fff}
+  .footer-col p,.footer-col a{font-size:12.5px;color:#aab;line-height:1.8;text-decoration:none;display:block}
+  .footer-col a:hover{color:#fff}
+  .footer-bottom{border-top:1px solid #2a2a2a;padding:14px 20px;text-align:center;
+    font-size:12px;color:#777}
 
   /* ===== Drawer ===== */
   .overlay{position:fixed;inset:0;background:rgba(0,0,0,.4);
@@ -199,7 +207,40 @@
 
 
   <!-- Footer -->
-  <footer class="footer">جميع الحقوق محفوظة &copy; Societe Generale Algerie</footer>
+  <footer class="footer">
+    <div class="footer-top">
+      <div class="footer-logo">
+        <img src="images/logo.jpg" alt="Societe Generale Algerie">
+      </div>
+      <div class="footer-cols">
+        <div class="footer-col">
+          <h4>العنوان</h4>
+          <p>Societe Generale Algerie</p>
+          <p>شارع كريم بلقاسم، حيدرة</p>
+          <p>الجزائر العاصمة، الجزائر</p>
+        </div>
+        <div class="footer-col">
+          <h4>اتصل بنا</h4>
+          <p>هاتف: 3020</p>
+          <p>فاكس: 023 48 18 19</p>
+          <p>البريد: contact@socgen.dz</p>
+        </div>
+        <div class="footer-col">
+          <h4>روابط مهمة</h4>
+          <a href="#">الشروط والأحكام</a>
+          <a href="#">سياسة الخصوصية</a>
+          <a href="#">الأسئلة الشائعة</a>
+        </div>
+        <div class="footer-col">
+          <h4>قانوني</h4>
+          <a href="#">الإشعار القانوني</a>
+          <a href="#">سياسة ملفات تعريف الارتباط</a>
+          <a href="#">حماية البيانات</a>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">جميع الحقوق محفوظة &copy; 2025 Societe Generale Algerie</div>
+  </footer>
 
   <!-- Drawer -->
   <div class="overlay" id="overlay"></div>
