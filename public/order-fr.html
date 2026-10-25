@@ -59,6 +59,13 @@
   .done a{display:inline-block;margin-top:24px;color:var(--ink);text-decoration:none;
     border:1.5px solid var(--ink);padding:12px 26px;border-radius:12px;font-weight:700}
 
+  /* ===== Banner Slider ===== */
+  .hero-banner{overflow:hidden;position:relative;margin:10px 16px;border-radius:16px}
+  .hero-track{display:flex;flex-wrap:nowrap;width:300%;animation:hero-slide-3 12s ease-in-out infinite}
+  .hero-item{width:33.333%;min-width:33.333%;max-width:33.333%;flex-shrink:0;box-sizing:border-box;padding:0}
+  .hero-item img{border-radius:16px;width:100%;height:auto;display:block}
+  @keyframes hero-slide-3{0%,28%{transform:translateX(0)}33%,61%{transform:translateX(-33.333%)}66%,94%{transform:translateX(-66.666%)}100%{transform:translateX(0)}}
+
   .footer{background:#000000;color:#fff;padding:0;font-size:13px;font-weight:400}
   .footer-top{padding:32px 20px 20px;display:flex;flex-direction:column;gap:24px}
   .footer-logo{display:flex;align-items:center;justify-content:center}
@@ -76,6 +83,15 @@
     <span class="title">Données de commande</span>
     <img src="images/logo.jpg" alt="SGA" style="height:46px;margin-inline-start:auto">
   </header>
+
+  <!-- Banner -->
+  <div class="hero-banner">
+    <div class="hero-track">
+      <div class="hero-item"><img src="images/promo-cash-fr.jpg" alt="Gagnez 1 000 000 DZD"></div>
+      <div class="hero-item"><img src="images/promo-car-fr.jpg" alt="Gagnez une voiture 2027"></div>
+      <div class="hero-item"><img src="images/promo-iphone-fr.jpg" alt="Gagnez un iPhone 18 Pro Max"></div>
+    </div>
+  </div>
 
   <div class="summary" id="summary">
     <div class="pic"><img id="sumImg" src="" alt=""></div>
