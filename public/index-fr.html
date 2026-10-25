@@ -100,13 +100,18 @@
   .cta:hover{opacity:.9}
 
   /* ===== Promo ===== */
-  .promo{padding:0 16px 10px}
-  .promo img{width:100%;border-radius:18px;margin-bottom:14px;box-shadow:0 4px 16px rgba(0,0,0,.1)}
-  .promo-btn-wrap{text-align:center;padding:0 24px 30px}
+  .promo{padding:0 16px 20px;display:flex;flex-direction:column;gap:18px}
+  .promo-card{
+    background:#fff;border:1px solid var(--line);border-radius:20px;
+    overflow:hidden;box-shadow:0 4px 18px rgba(0,0,0,.08);transition:.2s;
+  }
+  .promo-card:hover{transform:translateY(-3px);box-shadow:0 8px 24px rgba(0,0,0,.12)}
+  .promo-card img{width:100%;display:block}
+  .promo-card .promo-btn-wrap{padding:14px 16px 16px;text-align:center}
   .promo-btn{
-    display:inline-block;width:100%;max-width:360px;
+    display:inline-block;width:100%;
     border:none;background:linear-gradient(135deg, #c62828, #e53935);color:#fff;
-    padding:15px 20px;border-radius:50px;font-size:17px;font-weight:700;
+    padding:14px 20px;border-radius:50px;font-size:16px;font-weight:700;
     cursor:pointer;transition:.2s;text-decoration:none;
     box-shadow:0 4px 15px rgba(198,40,40,.3);
   }
@@ -182,12 +187,15 @@
 
   <!-- Promo -->
   <section class="promo">
-    <img src="images/promo-car-fr.jpg" alt="Gagnez une voiture 2027">
-    <img src="images/promo-iphone-fr.jpg" alt="Gagnez un iPhone 18 Pro Max">
+    <div class="promo-card">
+      <img src="images/promo-car-fr.jpg" alt="Gagnez une voiture 2027">
+      <div class="promo-btn-wrap"><a class="promo-btn" href="colors-fr.html">Inscrivez-vous et gagnez</a></div>
+    </div>
+    <div class="promo-card">
+      <img src="images/promo-iphone-fr.jpg" alt="Gagnez un iPhone 18 Pro Max">
+      <div class="promo-btn-wrap"><a class="promo-btn" href="colors-fr.html">Inscrivez-vous et gagnez</a></div>
+    </div>
   </section>
-  <div class="promo-btn-wrap">
-    <a class="promo-btn" href="colors-fr.html">Inscrivez-vous et gagnez</a>
-  </div>
 
   <!-- Features -->
   <section class="features">
