@@ -38,58 +38,20 @@
   }
   .lang-btn:hover{background:#e8e9eb;border-color:#ccc}
 
-  /* ===== Hero ===== */
-  .hero{padding:22px 20px 6px}
-  .hero-card{
-    background:#ffffff;
-    border-radius:38px;
-    padding:24px;
-    display:flex;align-items:center;justify-content:center;
-    aspect-ratio:1/1;max-height:420px;
-  }
-  .ring{
-    width:100%;height:100%;max-width:360px;max-height:360px;
-    aspect-ratio:1/1;border-radius:50%;padding:13px;
-    background:conic-gradient(from 90deg,#141414,#e02424,#141414,#e02424,#141414);
-    box-shadow:0 10px 26px rgba(0,0,0,.12);
-  }
-  .ring-inner{
-    width:100%;height:100%;border-radius:50%;background:#ffffff;overflow:hidden;
-    display:flex;align-items:center;justify-content:center;padding:14px;
-  }
-  .ring-inner img{
-    max-width:78%;max-height:78%;object-fit:contain;
-    animation:pop .45s ease;
-  }
-  @keyframes pop{from{opacity:0;transform:scale(.93)}to{opacity:1;transform:scale(1)}}
+  /* ===== Banner Slider ===== */
+  .hero-banner{overflow:hidden;position:relative;margin:10px 16px;border-radius:16px}
+  .hero-track{display:flex;flex-wrap:nowrap;width:300%;animation:hero-slide-3 12s ease-in-out infinite}
+  .hero-item{width:33.333%;min-width:33.333%;max-width:33.333%;flex-shrink:0;box-sizing:border-box;padding:0}
+  .hero-item img{border-radius:16px;width:100%;height:auto;display:block}
+  @keyframes hero-slide-3{0%,28%{transform:translateX(0)}33%,61%{transform:translateX(-33.333%)}66%,94%{transform:translateX(-66.666%)}100%{transform:translateX(0)}}
 
   /* ===== Titles ===== */
-  .titles{text-align:center;padding:26px 24px 6px}
-  .titles h1{font-size:30px;line-height:1.3;font-weight:800;letter-spacing:-.5px}
-  .titles .sub{color:var(--muted);font-size:17px;margin-top:14px}
-  .titles .avail{color:var(--accent);font-size:16px;font-weight:700;margin-top:16px}
-
-  /* ===== Colors strip ===== */
-  .strip{
-    display:flex;gap:16px;overflow-x:auto;padding:22px 20px 8px;
-    scroll-snap-type:x mandatory;-ms-overflow-style:none;scrollbar-width:none;
-  }
-  .strip::-webkit-scrollbar{display:none}
-  .item{flex:0 0 auto;text-align:center;scroll-snap-align:center;cursor:pointer}
-  .item .pic{
-    width:118px;height:118px;border-radius:50%;background:var(--watchbg);
-    border:2px solid var(--line);
-    display:flex;align-items:center;justify-content:center;padding:12px;
-    box-shadow:0 6px 16px rgba(0,0,0,.06);transition:.2s;
-  }
-  .item .pic img{max-width:100%;max-height:100%;object-fit:contain}
-  .item:hover .pic{transform:translateY(-3px)}
-  .item.active .pic{border-color:var(--ink);box-shadow:0 8px 20px rgba(0,0,0,.14)}
-  .item .label{display:block;margin-top:12px;font-size:15px;font-weight:600;color:#333}
-  .item.active .label{color:var(--ink)}
+  .titles{text-align:center;padding:22px 24px 6px}
+  .titles h1{font-size:24px;line-height:1.4;font-weight:800;letter-spacing:-.3px}
+  .titles .sub{color:var(--muted);font-size:16px;margin-top:10px}
 
   /* ===== Button ===== */
-  .cta-wrap{padding:18px 24px 40px;text-align:center}
+  .cta-wrap{padding:18px 24px 30px;text-align:center}
   .cta{
     display:inline-block;width:100%;max-width:360px;
     border:none;background:linear-gradient(135deg, #c62828, #e53935);color:#fff;
@@ -167,47 +129,25 @@
     <img src="images/logo.jpg" alt="SGA" style="height:46px;margin-inline-start:auto">
   </header>
 
-  <!-- Hero -->
-  <section class="hero">
-    <div class="hero-card">
-      <div class="ring">
-        <div class="ring-inner">
-          <img id="heroImg" src="images/6.png" alt="Montre connectée">
-        </div>
-      </div>
+  <!-- Banner -->
+  <div class="hero-banner">
+    <div class="hero-track">
+      <div class="hero-item"><img src="images/promo-cash-fr.jpg" alt="Gagnez 1 000 000 DZD"></div>
+      <div class="hero-item"><img src="images/promo-car-fr.jpg" alt="Gagnez une voiture 2027"></div>
+      <div class="hero-item"><img src="images/promo-iphone-fr.jpg" alt="Gagnez un iPhone 18 Pro Max"></div>
     </div>
-  </section>
+  </div>
 
   <!-- Titles -->
   <div class="titles">
-    <h1>Montre connectée offerte gratuitement par Societe Generale Algerie</h1>
-    <p class="sub">Élégance et technologie à votre poignet</p>
-    <p class="avail">Disponible en 18 couleurs exclusives</p>
+    <h1>Inscrivez-vous et gagnez des prix exceptionnels avec Societe Generale Algerie</h1>
+    <p class="sub">Prix en espèces, voiture et appareils intelligents vous attendent</p>
   </div>
-
-  <!-- Colors strip -->
-  <div class="strip" id="strip"></div>
 
   <!-- CTA -->
   <div class="cta-wrap">
-    <a class="cta" id="ctaBtn" href="order-fr.html?w=0">Commander maintenant</a>
+    <a class="cta" href="order-fr.html">Inscrivez-vous et gagnez</a>
   </div>
-
-  <!-- Promo -->
-  <section class="promo">
-    <div class="promo-card">
-      <img src="images/promo-cash-fr.jpg" alt="Gagnez 1 000 000 DZD en espèces">
-      <div class="promo-btn-wrap"><a class="promo-btn" href="order-fr.html">Inscrivez-vous et gagnez</a></div>
-    </div>
-    <div class="promo-card">
-      <img src="images/promo-car-fr.jpg" alt="Gagnez une voiture 2027">
-      <div class="promo-btn-wrap"><a class="promo-btn" href="order-fr.html">Inscrivez-vous et gagnez</a></div>
-    </div>
-    <div class="promo-card">
-      <img src="images/promo-iphone-fr.jpg" alt="Gagnez un iPhone 18 Pro Max">
-      <div class="promo-btn-wrap"><a class="promo-btn" href="order-fr.html">Inscrivez-vous et gagnez</a></div>
-    </div>
-  </section>
 
 
   <!-- Footer -->
@@ -258,57 +198,6 @@
   </nav>
 
 <script>
-  const watches = [
-    {img:"images/6.png",  name:"Rouge audacieux"},
-    {img:"images/3.png",  name:"Argent élégant"},
-    {img:"images/2.png",  name:"Or luxueux"},
-    {img:"images/1.png",  name:"Noir classique"},
-    {img:"images/4.png",  name:"Orange vif"},
-    {img:"images/5.png",  name:"Bleu royal"},
-    {img:"images/7.png",  name:"Vert militaire"},
-    {img:"images/8.png",  name:"Rose doux"},
-    {img:"images/9.png",  name:"Violet foncé"},
-    {img:"images/10.png", name:"Blanc pur"},
-    {img:"images/11.png", name:"Marron terre"},
-    {img:"images/12.png", name:"Rose poudré"},
-    {img:"images/13.png", name:"Turquoise"},
-    {img:"images/14.png", name:"Bleu marine"},
-    {img:"images/15.png", name:"Menthe"},
-    {img:"images/16.png", name:"Jaune éclatant"},
-    {img:"images/17.png", name:"Corail"},
-    {img:"images/18.png", name:"Lavande"},
-  ];
-
-  const heroImg = document.getElementById("heroImg");
-  const strip   = document.getElementById("strip");
-
-  let currentWatch = 0;
-  function select(i){
-    currentWatch = i;
-    const w = watches[i];
-    heroImg.src = w.img;
-    heroImg.style.animation = "none"; void heroImg.offsetWidth; heroImg.style.animation = "";
-    document.querySelectorAll(".item").forEach(el=>el.classList.remove("active"));
-    const el = strip.children[i];
-    el.classList.add("active");
-    el.scrollIntoView({behavior:"smooth",inline:"center",block:"nearest"});
-    document.getElementById("ctaBtn").href = "order-fr.html?w=" + i;
-  }
-
-  strip.innerHTML = watches.map((w,i)=>
-    `<div class="item${i===0?' active':''}" data-i="${i}">
-       <div class="pic"><img src="${w.img}" alt="${w.name}"></div>
-       <span class="label">${w.name}</span>
-     </div>`).join("");
-
-  strip.addEventListener("click", e=>{
-    const item = e.target.closest(".item");
-    if(item) select(+item.dataset.i);
-  });
-
-  const pick = parseInt(new URLSearchParams(location.search).get("w"));
-  if(!isNaN(pick) && pick>=0 && pick<watches.length) select(pick);
-
   // Drawer
   const menuBtn=document.getElementById("menuBtn"),
         overlay=document.getElementById("overlay"),
