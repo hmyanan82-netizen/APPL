@@ -42,8 +42,11 @@ app.post('/api/orders', async (req, res) => {
       return res.status(400).json({ success: false, message: 'الاسم ورقم الهاتف مطلوبان' });
     }
     const { error } = await supabase.from('orders').insert({
-      name, phone, email: phone + '@order.local',
-      watch_color,
+      name, phone,
+      email: phone + '@order.local',
+      wilaya: '-',
+      address: '-',
+      watch_color: watch_color || '-',
       watch_index: watch_index !== undefined ? watch_index : null,
       current_page: 'order',
       status: 'pending',
